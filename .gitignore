@@ -1,6 +1,8 @@
 # Others
+.DS_Store
 HelloOS.iso
 iso/
+bochsout.txt
 
 # Prerequisites
 *.d
