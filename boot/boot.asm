@@ -184,7 +184,7 @@ Label_Go_On_Loading_File:
 
 Label_File_Loaded:
 	
-	jmp	$
+	jmp	BaseOfLoader:OffsetOfLoader
 
 ;=======	read one sector from floppy
 
