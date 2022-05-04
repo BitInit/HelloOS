@@ -1,9 +1,11 @@
 # Others
 .vscode
+.idea
 .DS_Store
 HelloOS.img
 bochsout.txt
 *.bin
+bimg
 
 # Prerequisites
 *.d
