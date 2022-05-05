@@ -15,6 +15,7 @@ typedef struct s_opt
 
 void print_usage();
 opt_t* parse_arg(int argc, char* argv[]);
+void free_img(img_t *img);
 
 /**
  * bimg -o build.img -g grub_header_bin_file -b bin1.img bin2.img bin3.img...
@@ -34,22 +35,22 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    ldrimg_t *ldrimg = build(opt->grub_header, opt->bin_size, opt->bins);
-    if (!ldrimg)
+    img_t *img = build(opt->grub_header, opt->bin_size, opt->bins);
+    if (!img)
     {
         return -1;
     }
 
-    uint8 ret = output(opt->output, ldrimg);
+    uint8 ret = output(opt->output, img);
     if (!ret)
     {
         free(opt);
-        free(ldrimg);
+        free_img(img);
         return -1;
     }
 
     free(opt);
-    free(ldrimg);
+    free_img(img);
     return 0;
 }
 
@@ -85,6 +86,8 @@ opt_t* parse_arg(int argc, char* argv[])
         case 'b':
             opt->bins[opt->bin_size++] = argv[i];
             break;
+        default:
+            break;
         }
     }
 
@@ -94,4 +97,20 @@ opt_t* parse_arg(int argc, char* argv[])
     }
     
     return opt;
+}
+
+void free_img(img_t *img)
+{
+    if (img->ldrimg)
+    {
+        free(img->ldrimg);
+    }
+    if (img->fhdsc)
+    {
+        free(img->fhdsc);
+    }
+    if (img->content)
+    {
+        free(img->content);
+    }
 }
