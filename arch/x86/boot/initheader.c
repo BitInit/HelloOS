@@ -1,7 +1,15 @@
-#include "prints.h"
+#include "printk.h"
+
+void sleep(uint32 times) {
+    while (times--) ;
+}
 
 void inithead_entry() {
     clear_screen();
-    prints("01234567890123456789012345678901234567890123456789012345678901234567890123456789", 80);
+
+    for (int i = 0; i < 10000; i++) {
+        printf("%d\n", i);
+        sleep(300000);
+    }
     return;
 }

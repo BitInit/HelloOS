@@ -10,7 +10,7 @@ all: clean img
 
 img: bimg boot
 	@$(BIMG_DIR)/$(BIMG) -h $(BOOT_DIR)/$(IMG_HEADER) -o $(HELLO_OS)
-	bash build_grub.sh
+	@bash build_iso.sh
 
 boot:
 	@make -s -C $(BOOT_DIR)
@@ -19,6 +19,7 @@ bimg:
 	@make -s -C $(BIMG_DIR)
 
 clean:
+	@rm -rf $(HELLO_OS) *.iso
 	@make -C $(BIMG_DIR) clean
 	@make -C $(BOOT_DIR) clean
 

@@ -1,5 +1,5 @@
 /**
- * 实模式或保护模式下屏幕显示
+ * 保护模式下屏幕显示
  */
 #ifndef _PRINTS_H
 #define _PRINTS_H
@@ -13,8 +13,6 @@
 // 清屏
 void clear_screen();
 
-void prints(char *str, int32 num);
-
-void vsprintf(char *buf, const char *fmt, va_list args);
+void printf(const char *fmt, ...);
 
 #endif

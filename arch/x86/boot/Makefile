@@ -1,5 +1,5 @@
 CFLAGS = --static -I../include -fno-pie -fno-builtin -m32 -c -fno-stack-protector
-OBJS = imgheader.o initheader.o prints.o
+OBJS = imgheader.o initheader.o printk.o string.o
 
 IMG_HEADER ?= imgHeader.bin
 

@@ -10,6 +10,7 @@ bimg
 !bimg/
 *.dSYM
 iso/
+HelloOS
 
 # Prerequisites
 *.d

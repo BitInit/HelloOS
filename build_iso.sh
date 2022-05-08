@@ -23,11 +23,11 @@ cp HelloOS ${ISO_BOOT}/HelloOS
 
 # set grub.cfg
 touch "${ISO_BOOT_GRUB}/grub.cfg"
-echo 'set timeout=15
+echo 'set timeout=0
 set default=0
 menuentry "HelloOS" {
     multiboot2 /boot/HelloOS "KERNEL"
 }' >${ISO_BOOT_GRUB}/grub.cfg
 
 ${GRUB_PATH}/grub-mkrescue -o HelloOS.iso ${ISO_PATH}
-
+rm -rf ${ISO_PATH}
