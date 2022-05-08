@@ -8,11 +8,10 @@
 
 #define BUFFER_SIZE 1024
 
-uint8 read_grub(char *grub_header, img_t *img);
+uint8 build_header(char *header_name, img_t *img);
 uint8 read_bins(int bin_num, char **bins, img_t *img);
 
-ldrimg_t *init_ldrimg()
-{
+ldrimg_t *init_ldrimg() {
     ldrimg_t *img = (ldrimg_t *)malloc(sizeof(ldrimg_t));
     img->img_magic = LDRIMG_MAGIC;
     img->fhd_size = 0;
@@ -20,11 +19,10 @@ ldrimg_t *init_ldrimg()
     return img;
 }
 
-img_t* build(char *grub_header, int bin_size, char **bins)
-{
+img_t* build(char *header_name, int bin_size, char **bins) {
     img_t *img = (img_t*) malloc(sizeof(img_t));
     img->ldrimg = init_ldrimg();
-    if (read_grub(grub_header, img))
+    if (build_header(header_name, img))
     {
         printf("解析 grub 头文件失败\n");
         return NULL;
@@ -38,8 +36,7 @@ img_t* build(char *grub_header, int bin_size, char **bins)
     return img;
 }
 
-uint8 output(char *out, img_t *img)
-{
+int output(char *out, img_t *img) {
     // 计算 ldrimg 占多少字节
     size_t ldrimg_size = sizeof(*(img->ldrimg));
     // 计算文件描述符总共占多少字节
@@ -72,16 +69,15 @@ uint8 output(char *out, img_t *img)
     return 0;
 }
 
-uint8 read_grub(char *grub_header, img_t *img)
-{
+uint8 build_header(char *header_name, img_t *img) {
     int fd;
-    if ((fd = open(grub_header, O_RDONLY)) == -1) 
+    if ((fd = open(header_name, O_RDONLY)) == -1) 
     {
         return -1;
     }
 
     ldrimg_t *ldrimg = img->ldrimg;
-    char *dst = ldrimg->grub_header;
+    char *dst = ldrimg->header;
     char buf[BUFFER_SIZE];
     int size;
     while ((size = read(fd, buf, BUFFER_SIZE)) > 0)
@@ -93,30 +89,25 @@ uint8 read_grub(char *grub_header, img_t *img)
     return 0;
 }
 
-void close_files(FILE** files, int size)
-{
+void close_files(FILE** files, int size) {
     for (int i = 0; i < size; i++)
     {
         fclose(files[i]);
     }
 }
 
-char *get_file_name(char *filepath)
-{
+char *get_file_name(char *filepath) {
     char *p;
     return (p = strrchr(filepath, '/'))? p+1: filepath;
 }
 
-uint8 read_bins(int bin_num, char **bins, img_t *img)
-{
+uint8 read_bins(int bin_num, char **bins, img_t *img) {
     ldrimg_t *ldrimg = img->ldrimg;
     ldrimg->fhd_num = bin_num;
     FILE *files[bin_num];
-    for (int i = 0; i < bin_num; i++)
-    {
+    for (int i = 0; i < bin_num; i++) {
         FILE *file;
-        if ((file = fopen(bins[i], "r")) == NULL)
-        {
+        if ((file = fopen(bins[i], "r")) == NULL) {
             close_files(files, i-1);
             return -1;
         }
@@ -124,11 +115,9 @@ uint8 read_bins(int bin_num, char **bins, img_t *img)
     }
 
     fhdsc_t *fhdscs = (fhdsc_t*) malloc(bin_num * sizeof(fhdsc_t));
-    for (int i = 0; i < bin_num; i++)
-    {
+    for (int i = 0; i < bin_num; i++) {
         struct stat s;
-        if (stat(bins[i], &s) == -1)
-        {
+        if (stat(bins[i], &s) == -1) {
             close_files(files, bin_num);
             return -1;
         }
@@ -144,11 +133,9 @@ uint8 read_bins(int bin_num, char **bins, img_t *img)
 
     char buf[BUFFER_SIZE];
     char *p = img->content;
-    for (int i = 0; i < bin_num; i++)
-    {
+    for (int i = 0; i < bin_num; i++) {
         size_t size;
-        while ((size = fread(buf, sizeof(char), BUFFER_SIZE,files[i])) > 0)
-        {
+        while ((size = fread(buf, sizeof(char), BUFFER_SIZE,files[i])) > 0) {
             memcpy(p, buf, size);
             p += size;
         }

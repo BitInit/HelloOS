@@ -3,21 +3,20 @@
 
 #include "ldrimg.h"
 
-typedef struct s_img
-{
+typedef struct s_img {
     ldrimg_t *ldrimg;
     fhdsc_t *fhdsc;
     char *content;
 } img_t;
 
 // 构建
-// grub_header grub头文件名
+// header_name grub头文件名
 // ... 多个bin文件名
-img_t* build(char *grub_header, int bin_size, char **bins);
+img_t* build(char *header_name, int file_num, char **files_name);
 
 // 输出到文件
 // out 输出文件名
 // ldrimg
-uint8 output(char *out, img_t *ldrimg);
+int output(char *out, img_t *ldrimg);
 
 #endif

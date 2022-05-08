@@ -19,14 +19,14 @@ ISO_BOOT_GRUB="${ISO_BOOT}/grub"
 mkdir -p $ISO_BOOT_GRUB
 
 # fake
-touch ${ISO_BOOT}/HelloOS_kernel.elf
+cp HelloOS ${ISO_BOOT}/HelloOS
 
 # set grub.cfg
 touch "${ISO_BOOT_GRUB}/grub.cfg"
 echo 'set timeout=15
 set default=0
 menuentry "HelloOS" {
-    multiboot2 /boot/HelloOS_kernel.elf "KERNEL_ELF"
+    multiboot2 /boot/HelloOS "KERNEL"
 }' >${ISO_BOOT_GRUB}/grub.cfg
 
 ${GRUB_PATH}/grub-mkrescue -o HelloOS.iso ${ISO_PATH}

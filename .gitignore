@@ -2,10 +2,14 @@
 .vscode
 .idea
 .DS_Store
-HelloOS.img
 bochsout.txt
 *.bin
+*.iso
+*.img
 bimg
+!bimg/
+*.dSYM
+iso/
 
 # Prerequisites
 *.d

@@ -1,0 +1,7 @@
+#include "prints.h"
+
+void inithead_entry() {
+    clear_screen();
+    prints("01234567890123456789012345678901234567890123456789012345678901234567890123456789", 80);
+    return;
+}
