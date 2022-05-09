@@ -1,7 +1,7 @@
 #ifndef _LDRIMG_H
 #define _LDRIMG_H
 
-#include "type.h"
+#include "ktype.h"
 #include <stdlib.h>
 
 #define LDRIMG_MAGIC 0x20220505babeffff

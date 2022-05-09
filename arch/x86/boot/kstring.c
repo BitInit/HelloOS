@@ -1,4 +1,4 @@
-#include "string.h"
+#include "kstring.h"
 
 size_t strcpy(char *dst, char *src) {
     size_t num = 0;

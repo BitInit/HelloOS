@@ -1,5 +1,5 @@
 #include "printk.h"
-#include "string.h"
+#include "kstring.h"
 
 #define MAX_ROW 25
 #define MAX_COLUMN 80
@@ -33,8 +33,7 @@ char* numberk(char *buf, int32 n, int32 base) {
     p = &strbuf[36];
     *--p = 0;
 
-    if (n == 0)
-    {
+    if (n == 0) {
         *--p = '0';
     } else {
         do {
@@ -91,6 +90,8 @@ void vsprintf(char *buf, const char *fmt, va_list args) {
                 int32 val = va_arg(args, int32);
                 buf = numberk(buf, val, 10);
             } else if (ch == 'x') {
+                *(buf++) = '0';
+                *(buf++) = 'x';
                 int32 val = va_arg(args, int32);
                 buf = numberk(buf, val, 16);
             }

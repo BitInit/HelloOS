@@ -1,10 +1,10 @@
 /**
  * 保护模式下屏幕显示
  */
-#ifndef _PRINTS_H
-#define _PRINTS_H
+#ifndef _PRINTK_H
+#define _PRINTK_H
 
-#include "type.h"
+#include "ktype.h"
 #include <stdarg.h>
 
 #define VGA_BASE 0xb8000

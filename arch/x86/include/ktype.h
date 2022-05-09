@@ -1,5 +1,5 @@
-#ifndef _BOOT_TPYE_H
-#define _BOOT_TYPE_H
+#ifndef _KTPYE_H
+#define _KTYPE_H
 
 typedef unsigned char uint8;
 typedef char int8;

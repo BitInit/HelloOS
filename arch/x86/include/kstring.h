@@ -1,7 +1,7 @@
-#ifndef _STRING_H
-#define _STRING_H
+#ifndef _KSTRING_H
+#define _KSTRING_H
 
-#include "type.h"
+#include "ktype.h"
 
 /**
  * 字符串复制，返回复制数量
