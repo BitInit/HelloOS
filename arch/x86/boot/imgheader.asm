@@ -35,7 +35,7 @@ mbhdr:
 	DW	3, 0
 	DD	12
 	DD	_entry 
-	DD      0  
+	DD  0  
 	DW	0, 0
 	DD	8
 mhdrend:

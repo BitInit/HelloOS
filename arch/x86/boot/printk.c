@@ -47,7 +47,7 @@ char* numberk(char *buf, int32 n, int32 base) {
     return buf;
 }
 
-void print(char *buf) {
+void print(uint16 color, char *buf) {
     char ch;
     while (ch = *(buf++)) {
         if (ch == '\n') {
@@ -70,7 +70,7 @@ void print(char *buf) {
                 cursor.y = MAX_ROW - 1;
             }
             uint16 *p = (uint16*)(VGA_BASE + cursor.y*MAX_COLUMN*2 + cursor.x*2);
-            *p = 0x0700 + ch;
+            *p = (uint16)(color << 8) + ch;
             cursor.x++;
         }
     }
@@ -102,10 +102,26 @@ void vsprintf(char *buf, const char *fmt, va_list args) {
     return;
 }
 
-void printf(const char *fmt, ...) {
+void _printf(uint16 color, const char *fmt, va_list args) {
     char buf[512];
+    vsprintf(buf, fmt, args);
+    print(color, buf);
+}
+
+void printf(const char *fmt, ...) {
     va_list args;
     va_start(args, fmt);
-    vsprintf(buf, fmt, args);
-    print(buf);
+    _printf(WORD_WHITE, fmt, args);
+}
+
+void err_printf(const char *fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+    _printf(WORD_RED, fmt, args);
+}
+
+void color_printf(uint8 color, const char *fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+    _printf(color, fmt, args);
 }

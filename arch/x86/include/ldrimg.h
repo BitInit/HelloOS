@@ -2,7 +2,6 @@
 #define _LDRIMG_H
 
 #include "ktype.h"
-#include <stdlib.h>
 
 #define LDRIMG_MAGIC 0x20220505babeffff
 #define GRUB_HEADER_SIZE 4096
