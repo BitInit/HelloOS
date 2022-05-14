@@ -23,7 +23,7 @@ void clear_screen() {
 }
 
 char* numberk(char *buf, int32 n, int32 base) {
-    if (n < 0) {
+    if (n < 0 && base != 16) {
         *(buf++) = '-';
         n = -n;
     }
@@ -62,7 +62,7 @@ void print(uint16 color, char *buf) {
             }
             if (cursor.y >= MAX_ROW) {
                 // 25 行屏幕全部占完，滚动显示日志
-                size_t n = (MAX_ROW-1) * MAX_COLUMN * 2;
+                uint32 n = (MAX_ROW-1) * MAX_COLUMN * 2;
                 char *dst = (char*)(VGA_BASE), 
                      *src = (char*)(VGA_BASE + MAX_COLUMN*2);
                 strncpy(dst, src, n);
@@ -84,15 +84,15 @@ void vsprintf(char *buf, const char *fmt, va_list args) {
             ch = *(fmt++);
             if (ch == 's') {
                 char *val = va_arg(args, char*);
-                size_t n = strcpy(buf, val);
+                uint32 n = strcpy(buf, val);
                 buf += n;
             } else if (ch == 'd') {
                 int32 val = va_arg(args, int32);
                 buf = numberk(buf, val, 10);
             } else if (ch == 'x') {
+                int32 val = va_arg(args, uint32);
                 *(buf++) = '0';
                 *(buf++) = 'x';
-                int32 val = va_arg(args, int32);
                 buf = numberk(buf, val, 16);
             }
         } else {
@@ -103,7 +103,7 @@ void vsprintf(char *buf, const char *fmt, va_list args) {
 }
 
 void _printf(uint16 color, const char *fmt, va_list args) {
-    char buf[512];
+    char buf[512] = {0};
     vsprintf(buf, fmt, args);
     print(color, buf);
 }
@@ -124,4 +124,10 @@ void color_printf(uint8 color, const char *fmt, ...) {
     va_list args;
     va_start(args, fmt);
     _printf(color, fmt, args);
+}
+
+int main(int argc, char *argv[]) {
+    printf("magic:%x\n", 0x2022babe);
+    printf("sizeof:%d\n", sizeof(char*));
+    return 0;
 }
