@@ -125,9 +125,3 @@ void color_printf(uint8 color, const char *fmt, ...) {
     va_start(args, fmt);
     _printf(color, fmt, args);
 }
-
-int main(int argc, char *argv[]) {
-    printf("magic:%x\n", 0x2022babe);
-    printf("sizeof:%d\n", sizeof(char*));
-    return 0;
-}

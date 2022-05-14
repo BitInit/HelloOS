@@ -1,23 +1,45 @@
 #include "printk.h"
 #include "ldrimg.h"
+#include "kstring.h"
 
-#define IMG_BASE 0x8000000
-#define LDRIMG_BASE (IMG_BASE + HEADER_SIZE)
-
-void sleep(uint32 times) {
-    while (times--) ;
-}
+void exit();
+void cp_file(ldrimg_t *ldrimg, char *name, char *dst);
 
 void inithead_entry() {
     clear_screen();
-    int i = 0;
-    printf("func addr:%x\n", inithead_entry);
 
     ldrimg_t *ldrimg = (ldrimg_t*) IMG_BASE;
-    printf("magic: %x\n", ldrimg->img_magic);
-    printf("magic addr:%x\n", &ldrimg->img_magic);
-    printf("i addr:%x\n", &i);
+    if (ldrimg->img_magic != LDRIMG_MAGIC) {
+        exit("image file format error");
+    }
+    
+    cp_file(ldrimg, HARDWARE_CHECK_BIN, (char*)HARDWARE_CHECK_ADDR);
+    cp_file(ldrimg, KERNEL_BIN, (char*)KERNEL_ADDR);
+    return;
+}
 
-    printf("sizeof: %d\n", sizeof(char*));
+void cp_file(ldrimg_t *ldrimg, char *name, char *dst) {
+    uint32 file_num = ldrimg->fhd_num, fhd_size = 0;
+    char *src = NULL;
+    for (int32 i = 0; i < file_num; i++) {
+        fhdsc_t *fhdsc = (fhdsc_t*) LDRFILE_BASE + i*sizeof(fhdsc_t);
+        if (!strcmp(name, fhdsc->fhd_name)) {
+            src = (char*)(IMG_BASE + fhdsc->fhd_posoffset);
+            fhd_size = fhdsc->fhd_size;
+            break;
+        }
+    }
+    if (!src) {
+        err_printf("[error] can't find %s\n", name);
+        exit();
+    }
+    printf("[info] load %s successfully\n", name);
+    
+    strncpy(dst, src, fhd_size);
+    return;
+}
+
+void exit() {
+    while (TRUE) ;
     return;
 }

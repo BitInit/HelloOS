@@ -7,6 +7,15 @@
 #define HEADER_SIZE 4096
 #define FH_MAX_NAME_LEN 192 // 文件名最大长度
 
+#define IMG_BASE 0x8000000
+#define LDRFILE_BASE (IMG_BASE + sizeof(ldrimg_t))
+
+#define HARDWARE_CHECK_BIN "hardwareinfocheck.bin"
+#define HARDWARE_CHECK_ADDR 0x400000
+
+#define KERNEL_BIN "kernel.bin"
+#define KERNEL_ADDR 0x800000
+
 typedef struct s_fhdsc {
     uint32 fhd_posoffset;               // 文件开始偏移位置
     uint32 fhd_posend;                  // 文件位置偏移结束
@@ -32,5 +41,7 @@ typedef struct s_ldrimg {
     uint32 fhd_num;
     uint32 fhd_size;
 } ldrimg_t;
+
+
 
 #endif
