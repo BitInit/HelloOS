@@ -10,10 +10,11 @@ void inithead_entry() {
 
     ldrimg_t *ldrimg = (ldrimg_t*) IMG_BASE;
     if (ldrimg->img_magic != LDRIMG_MAGIC) {
-        exit("image file format error");
+        err_printf("image file format error");
+        exit();
     }
     
-    cp_file(ldrimg, HARDWARE_CHECK_BIN, (char*)HARDWARE_CHECK_ADDR);
+    cp_file(ldrimg, MACHINE_CHECK_BIN, (char*)MACHINE_CHECK_ADDR);
     cp_file(ldrimg, KERNEL_BIN, (char*)KERNEL_ADDR);
     return;
 }
@@ -22,7 +23,7 @@ void cp_file(ldrimg_t *ldrimg, char *name, char *dst) {
     uint32 file_num = ldrimg->fhd_num, fhd_size = 0;
     char *src = NULL;
     for (int32 i = 0; i < file_num; i++) {
-        fhdsc_t *fhdsc = (fhdsc_t*) LDRFILE_BASE + i*sizeof(fhdsc_t);
+        fhdsc_t *fhdsc = (fhdsc_t*) (LDRFILE_BASE + i*sizeof(fhdsc_t));
         if (!strcmp(name, fhdsc->fhd_name)) {
             src = (char*)(IMG_BASE + fhdsc->fhd_posoffset);
             fhd_size = fhdsc->fhd_size;

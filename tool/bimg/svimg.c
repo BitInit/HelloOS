@@ -38,19 +38,17 @@ img_t* build(char *header_name, int bin_size, char **bins) {
 
 int output(char *out, img_t *img) {
     // 计算 ldrimg 占多少字节
-    size_t ldrimg_size = sizeof(*(img->ldrimg));
+    size_t ldrimg_size = sizeof(ldrimg_t);
     // 计算文件描述符总共占多少字节
-    size_t fhdsc_size = sizeof((*(img->fhdsc)))*(img->ldrimg->fhd_num);
+    size_t all_fhdsc_size = sizeof(fhdsc_t)*(img->ldrimg->fhd_num);
 
-    for (int i = 0; i < img->ldrimg->fhd_num; i++)
-    {
-        img->fhdsc[i].fhd_posoffset += ldrimg_size + fhdsc_size;
-        img->fhdsc[i].fhd_posend += ldrimg_size + fhdsc_size;
+    for (int i = 0; i < img->ldrimg->fhd_num; i++) {
+        img->fhdsc[i].fhd_posoffset += ldrimg_size + all_fhdsc_size;
+        img->fhdsc[i].fhd_posend += ldrimg_size + all_fhdsc_size;
     }
 
     FILE *file;
-    if ((file = fopen(out, "w+")) == NULL)
-    {
+    if ((file = fopen(out, "w+")) == NULL) {
         return -1;
     }
 
@@ -59,7 +57,7 @@ int output(char *out, img_t *img) {
     fwrite(val, sizeof(char), ldrimg_size, file);
     // 写入文件描述符
     val = (char *)img->fhdsc;
-    fwrite(val, sizeof(char), fhdsc_size, file);
+    fwrite(val, sizeof(char), all_fhdsc_size, file);
     // 写入数据内容
     val = img->content;
     fwrite(val, sizeof(char), img->ldrimg->fhd_size, file);
@@ -71,8 +69,7 @@ int output(char *out, img_t *img) {
 
 uint8 build_header(char *header_name, img_t *img) {
     int fd;
-    if ((fd = open(header_name, O_RDONLY)) == -1) 
-    {
+    if ((fd = open(header_name, O_RDONLY)) == -1) {
         return -1;
     }
 
@@ -80,8 +77,7 @@ uint8 build_header(char *header_name, img_t *img) {
     char *dst = ldrimg->header;
     char buf[BUFFER_SIZE];
     int size;
-    while ((size = read(fd, buf, BUFFER_SIZE)) > 0)
-    {
+    while ((size = read(fd, buf, BUFFER_SIZE)) > 0) {
         memcpy(dst, buf, size);
         dst += size;
     }
@@ -90,8 +86,7 @@ uint8 build_header(char *header_name, img_t *img) {
 }
 
 void close_files(FILE** files, int size) {
-    for (int i = 0; i < size; i++)
-    {
+    for (int i = 0; i < size; i++) {
         fclose(files[i]);
     }
 }

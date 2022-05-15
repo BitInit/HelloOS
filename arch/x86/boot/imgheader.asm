@@ -68,8 +68,7 @@ _32bits_mode:
 	mov esp,0x7c00
 
 	call inithead_entry
-	; jmp 0x200000
-    jmp $
+	jmp 0x400000
 
 GDT_START:
 knull_dsc: dq 0

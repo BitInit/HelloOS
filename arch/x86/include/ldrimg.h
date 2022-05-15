@@ -10,8 +10,8 @@
 #define IMG_BASE 0x8000000
 #define LDRFILE_BASE (IMG_BASE + sizeof(ldrimg_t))
 
-#define HARDWARE_CHECK_BIN "hardwareinfocheck.bin"
-#define HARDWARE_CHECK_ADDR 0x400000
+#define MACHINE_CHECK_BIN "machineinfocheck.bin"
+#define MACHINE_CHECK_ADDR 0x400000
 
 #define KERNEL_BIN "kernel.bin"
 #define KERNEL_ADDR 0x800000
@@ -41,7 +41,5 @@ typedef struct s_ldrimg {
     uint32 fhd_num;
     uint32 fhd_size;
 } ldrimg_t;
-
-
 
 #endif
