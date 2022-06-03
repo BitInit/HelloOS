@@ -1,19 +1,20 @@
 #include "printk.h"
-#include "kstring.h"
+#include "string.h"
+#include <stdarg.h>
 
 #define MAX_ROW 25
 #define MAX_COLUMN 80
 
 typedef struct s_cursor {
-    uint32 x;
-    uint32 y;
+    uint32_t x;
+    uint32_t y;
 } cursor_t;
 
 __attribute__((section(".data"))) cursor_t cursor;
 
 void clear_screen() {
-    uint16 *p = (uint16*)VGA_BASE;
-    for (int32 i = 0; i <= MAX_ROW*MAX_COLUMN; i++) {
+    uint16_t *p = (uint16_t*)VGA_BASE;
+    for (int32_t i = 0; i <= MAX_ROW*MAX_COLUMN; i++) {
         p[i] = 0;
     }
 
@@ -22,7 +23,7 @@ void clear_screen() {
     return;
 }
 
-char* numberk(char *buf, int32 n, int32 base) {
+char* numberk(char *buf, int32_t n, int32_t base) {
     if (n < 0 && base != 16) {
         *(buf++) = '-';
         n = -n;
@@ -47,7 +48,7 @@ char* numberk(char *buf, int32 n, int32 base) {
     return buf;
 }
 
-void print(uint16 color, char *buf) {
+void print(uint16_t color, char *buf) {
     char ch;
     while (ch = *(buf++)) {
         if (ch == '\n') {
@@ -62,15 +63,15 @@ void print(uint16 color, char *buf) {
             }
             if (cursor.y >= MAX_ROW) {
                 // 25 行屏幕全部占完，滚动显示日志
-                uint32 n = (MAX_ROW-1) * MAX_COLUMN * 2;
+                uint32_t n = (MAX_ROW-1) * MAX_COLUMN * 2;
                 char *dst = (char*)(VGA_BASE), 
                      *src = (char*)(VGA_BASE + MAX_COLUMN*2);
                 strncpy(dst, src, n);
                 cursor.x = 0;
                 cursor.y = MAX_ROW - 1;
             }
-            uint16 *p = (uint16*)(VGA_BASE + cursor.y*MAX_COLUMN*2 + cursor.x*2);
-            *p = (uint16)(color << 8) + ch;
+            uint16_t *p = (uint16_t*)(VGA_BASE + cursor.y*MAX_COLUMN*2 + cursor.x*2);
+            *p = (uint16_t)(color << 8) + ch;
             cursor.x++;
         }
     }
@@ -84,13 +85,13 @@ void vsprintf(char *buf, const char *fmt, va_list args) {
             ch = *(fmt++);
             if (ch == 's') {
                 char *val = va_arg(args, char*);
-                uint32 n = strcpy(buf, val);
+                uint32_t n = strcpy(buf, val);
                 buf += n;
             } else if (ch == 'd') {
-                int32 val = va_arg(args, int32);
+                int32_t val = va_arg(args, int32_t);
                 buf = numberk(buf, val, 10);
             } else if (ch == 'x') {
-                int32 val = va_arg(args, uint32);
+                int32_t val = va_arg(args, uint32_t);
                 *(buf++) = '0';
                 *(buf++) = 'x';
                 buf = numberk(buf, val, 16);
@@ -102,7 +103,7 @@ void vsprintf(char *buf, const char *fmt, va_list args) {
     return;
 }
 
-void _printf(uint16 color, const char *fmt, va_list args) {
+void _printf(uint16_t color, const char *fmt, va_list args) {
     char buf[512] = {0};
     vsprintf(buf, fmt, args);
     print(color, buf);
@@ -120,7 +121,7 @@ void err_printf(const char *fmt, ...) {
     _printf(WORD_RED, fmt, args);
 }
 
-void color_printf(uint8 color, const char *fmt, ...) {
+void color_printf(uint8_t color, const char *fmt, ...) {
     va_list args;
     va_start(args, fmt);
     _printf(color, fmt, args);

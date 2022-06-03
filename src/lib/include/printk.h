@@ -4,8 +4,7 @@
 #ifndef _PRINTK_H
 #define _PRINTK_H
 
-#include "ktype.h"
-#include <stdarg.h>
+#include "type.h"
 
 #define VGA_BASE 0xb8000
 #define VGA_END  0xbffff
@@ -29,6 +28,6 @@ void err_printf(const char *fmt, ...);
  * 带有颜色的信息打印
  * color：高4位背景色，低4位前景色
  */
-void color_printf(uint8 color, const char *fmt, ...);
+void color_printf(uint8_t color, const char *fmt, ...);
 
 #endif

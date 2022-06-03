@@ -1,7 +1,7 @@
-#include "kstring.h"
+#include "string.h"
 
-uint32 strcpy(char *dst, char *src) {
-    uint32 num = 0;
+uint32_t strcpy(char *dst, char *src) {
+    uint32_t num = 0;
     while (*src) {
         *(dst++) = *(src++);
         num++;
@@ -9,7 +9,7 @@ uint32 strcpy(char *dst, char *src) {
     return num;
 }
 
-char* strncpy(char *dst, char *src, uint32 n) {
+char* strncpy(char *dst, char *src, uint32_t n) {
     char *p = dst;
     while (n-- > 0) {
         *(p++) = *(src++);
@@ -17,7 +17,7 @@ char* strncpy(char *dst, char *src, uint32 n) {
     return dst;
 }
 
-uint8 strcmp(const char *str1, const char *str2) {
+uint8_t strcmp(const char *str1, const char *str2) {
     while (*str1 && *str2 && (*str1 == *str2)) {
         str1++;
         str2++;
