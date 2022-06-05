@@ -30,4 +30,6 @@ void err_printf(const char *fmt, ...);
  */
 void color_printf(uint8_t color, const char *fmt, ...);
 
+void kerror(const char *fmt, ...);
+
 #endif

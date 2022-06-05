@@ -1,9 +1,6 @@
 #define ASM_FILE 1
 #include "multiboot2.h"
 
-# the size of stack is 16KB
-#define STACK_SIZE 0x4000
-
 #ifdef KERN_VBE_MODE
 #define FRAMEBUFFER_WIDTH 1024
 #define FRAMEBUFFER_HEIGHT 768
@@ -46,20 +43,14 @@ multiboot_header_end:
 
 multiboot_entry:
     cli
-    /*
-    mov $0, %ebx
-    mov $multiboot_entry, %eax
-    mov %eax, 0(%ebx) 
-    hlt
-    */
     # reset EFLAGS
     pushl $0
     popf
 
-    # push the pointer to the Multiboot information structure
-    # pushl %ebx
-    # push the magic value
-    # pushl %eax
+    # the magic value
+    mov %eax, mb2_magic
+    # the pointer to the Multiboot information structure
+    mov %ebx, mb2_info
 
     # 允许 PAE
     mov %cr4, %eax
@@ -131,7 +122,12 @@ _start64:
     and $0xFFFFFFFFFFFFF000, %rsp
     # 帧指针修改为 0
     mov $0, %rbp
+
+    # x86_64 位，函数调用通过寄存器传参
+    movq mb2_info, %rsi
+    movq mb2_magic, %rdi
     call kernel_start
+
     hlt
     ret
 
@@ -189,6 +185,9 @@ user_data_desc:
 gdt64_pointer64:
     .short gdt64_pointer64-gdt64-1
     .quad gdt64
+
+mb2_magic: .quad 0x00
+mb2_info: .quad 0x00
 
 .section .bss
 STACK:

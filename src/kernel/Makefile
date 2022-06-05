@@ -1,9 +1,11 @@
-CFLAGS = -c -I../lib/include --static -fno-pie -fno-builtin -fno-stack-protector -m64
-OBJS = setup.o
+CFLAGS = -c -I../lib/include -I../include \
+	-I./include \
+	--static -fno-pie -fno-builtin -fno-stack-protector -m64
+KERNLE_OBJS = kernel.o mm.o
 
 all: clean build
 
-build: $(OBJS)
+build: $(KERNLE_OBJS)
 
 %.o: %.c
 	@gcc $(CFLAGS) -o $@ $<

@@ -23,15 +23,15 @@ void clear_screen() {
     return;
 }
 
-char* numberk(char *buf, int32_t n, int32_t base) {
+char* numberk(char *buf, int64_t n, int32_t base) {
     if (n < 0 && base != 16) {
         *(buf++) = '-';
         n = -n;
     }
     
     register char *p;
-    char strbuf[36];
-    p = &strbuf[36];
+    char strbuf[64];
+    p = &strbuf[64];
     *--p = 0;
 
     if (n == 0) {
@@ -70,7 +70,7 @@ void print(uint16_t color, char *buf) {
                 cursor.x = 0;
                 cursor.y = MAX_ROW - 1;
             }
-            uint16_t *p = (uint16_t*)(VGA_BASE + cursor.y*MAX_COLUMN*2 + cursor.x*2);
+            uint16_t *p = (uint16_t*)((uint64_t)(VGA_BASE + cursor.y*MAX_COLUMN*2 + cursor.x*2));
             *p = (uint16_t)(color << 8) + ch;
             cursor.x++;
         }
@@ -85,13 +85,13 @@ void vsprintf(char *buf, const char *fmt, va_list args) {
             ch = *(fmt++);
             if (ch == 's') {
                 char *val = va_arg(args, char*);
-                uint32_t n = strcpy(buf, val);
+                uint64_t n = strcpy(buf, val);
                 buf += n;
             } else if (ch == 'd') {
-                int32_t val = va_arg(args, int32_t);
+                int64_t val = va_arg(args, int64_t);
                 buf = numberk(buf, val, 10);
             } else if (ch == 'x') {
-                int32_t val = va_arg(args, uint32_t);
+                uint64_t val = va_arg(args, uint64_t);
                 *(buf++) = '0';
                 *(buf++) = 'x';
                 buf = numberk(buf, val, 16);
@@ -113,16 +113,28 @@ void printf(const char *fmt, ...) {
     va_list args;
     va_start(args, fmt);
     _printf(WORD_WHITE, fmt, args);
+    va_end(args);
 }
 
 void err_printf(const char *fmt, ...) {
     va_list args;
     va_start(args, fmt);
     _printf(WORD_RED, fmt, args);
+    va_end(args);
 }
 
 void color_printf(uint8_t color, const char *fmt, ...) {
     va_list args;
     va_start(args, fmt);
     _printf(color, fmt, args);
+    va_end(args);
+}
+
+void kerror(const char *fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+    _printf(WORD_RED, fmt, args);
+    va_end(args);
+    while (1) ;
+    return;
 }
