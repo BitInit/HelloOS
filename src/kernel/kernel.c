@@ -2,9 +2,7 @@
 #include "printk.h"
 #include "mm.h"
 
-global_mem_descriptor_t global_mem_descriptor;
-
-static void _init_memory(struct multiboot_tag *tag);
+global_mm_descriptor_t global_mm_descriptor;
 static void parse_sys_info(multiboot_uint64_t mb2_info_addr);
 
 int kernel_start(multiboot_uint64_t mb2_magic, multiboot_uint64_t mb2_info_addr) {
@@ -20,6 +18,7 @@ int kernel_start(multiboot_uint64_t mb2_magic, multiboot_uint64_t mb2_info_addr)
     return 0;
 }
 
+static void _init_memory(struct multiboot_tag *tag);
 static void parse_sys_info(multiboot_uint64_t mb2_info_addr) {
     struct multiboot_tag *tag;
     for (tag = (struct multiboot_tag*)(mb2_info_addr + MULTIBOOT_TAG_ALIGN);
@@ -41,13 +40,13 @@ static void _init_memory(struct multiboot_tag *tag) {
 
     uint32_t i = 0;
     while ((uint8_t*)entry < (uint8_t*)mmap + mmap->size) {
-        global_mem_descriptor.e820[i].addr = entry->addr;
-        global_mem_descriptor.e820[i].len = entry->len;
-        global_mem_descriptor.e820[i].type = entry->type;
+        global_mm_descriptor.e820[i].addr = entry->addr;
+        global_mm_descriptor.e820[i].len = entry->len;
+        global_mm_descriptor.e820[i].type = entry->type;
         i++;
         
         entry = (struct multiboot_mmap_entry*)((uint8_t*)entry + mmap->entry_size);
     }
-    global_mem_descriptor.e820_num = i;
+    global_mm_descriptor.e820_num = i;
     init_memory();
 }

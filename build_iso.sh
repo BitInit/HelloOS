@@ -7,7 +7,6 @@ if [ "$HOST_OS" != "Linux" ]; then
 fi
 
 GRUB_PATH="$(dirname $(which grub-file))"
-# KERNEL_IMAGE="./bin/HelloOS_kernel.elf"
 
 # creating root directory of iso and removing all files
 ISO_PATH="$(dirname $0)/iso"

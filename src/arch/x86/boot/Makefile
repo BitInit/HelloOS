@@ -7,11 +7,11 @@ all: clean build
 build: $(BOOT_OBJS)
 
 multiboot2.o: multiboot2.S
-	@gcc -E $(CFLAGS) $< > multiboot2.s~
-	@as $(ASFLAGS) -o $@ multiboot2.s~
+	@gcc -E $(CFLAGS) $< > multiboot2.i
+	@as $(ASFLAGS) -o $@ multiboot2.i
 
 %.o: %.c
 	@gcc -c $(CFLAGS) -o $@ $<
 
 clean:
-	@rm -rf *.s~ *.o
+	@rm -rf *.i *.o
