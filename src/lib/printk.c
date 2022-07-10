@@ -109,21 +109,21 @@ void _printf(uint16_t color, const char *fmt, va_list args) {
     print(color, buf);
 }
 
-void printf(const char *fmt, ...) {
+void kprintf(const char *fmt, ...) {
     va_list args;
     va_start(args, fmt);
     _printf(WORD_WHITE, fmt, args);
     va_end(args);
 }
 
-void err_printf(const char *fmt, ...) {
+void kerr_printf(const char *fmt, ...) {
     va_list args;
     va_start(args, fmt);
     _printf(WORD_RED, fmt, args);
     va_end(args);
 }
 
-void color_printf(uint8_t color, const char *fmt, ...) {
+void kcolor_printf(uint8_t color, const char *fmt, ...) {
     va_list args;
     va_start(args, fmt);
     _printf(color, fmt, args);

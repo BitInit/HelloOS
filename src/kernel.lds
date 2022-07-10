@@ -5,6 +5,7 @@ ENTRY(_start)
 SECTIONS
 {
     . = 1M;
+    _start_kernel = .;
     .text : { *(.text) }
 
     .data : ALIGN(4) { *(.data) }
@@ -12,4 +13,6 @@ SECTIONS
     .rodata : ALIGN(4) { *(.rodata) *(.rodata.*) }
 
     .bss : ALIGN(4) { *(.bss) }
+
+    _end_kernel = .;
 }

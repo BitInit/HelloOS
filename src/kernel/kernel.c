@@ -2,7 +2,7 @@
 #include "printk.h"
 #include "mm.h"
 
-global_mm_descriptor_t global_mm_descriptor;
+extern global_mm_descriptor_t global_mm_descriptor;
 static void parse_sys_info(multiboot_uint64_t mb2_info_addr);
 
 int kernel_start(multiboot_uint64_t mb2_magic, multiboot_uint64_t mb2_info_addr) {
@@ -19,6 +19,7 @@ int kernel_start(multiboot_uint64_t mb2_magic, multiboot_uint64_t mb2_info_addr)
 }
 
 static void _init_memory(struct multiboot_tag *tag);
+
 static void parse_sys_info(multiboot_uint64_t mb2_info_addr) {
     struct multiboot_tag *tag;
     for (tag = (struct multiboot_tag*)(mb2_info_addr + MULTIBOOT_TAG_ALIGN);

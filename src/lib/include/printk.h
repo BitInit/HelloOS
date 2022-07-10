@@ -17,18 +17,18 @@
  */
 void clear_screen();
 
-void printf(const char *fmt, ...);
+void kprintf(const char *fmt, ...);
 
 /**
  * 打印错误日志
  */
-void err_printf(const char *fmt, ...);
+void kerr_printf(const char *fmt, ...);
 
 /**
  * 带有颜色的信息打印
  * color：高4位背景色，低4位前景色
  */
-void color_printf(uint8_t color, const char *fmt, ...);
+void kcolor_printf(uint8_t color, const char *fmt, ...);
 
 void kerror(const char *fmt, ...);
 

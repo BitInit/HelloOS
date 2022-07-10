@@ -12,6 +12,7 @@ bimg
 iso/
 HelloOS
 *.s~
+*.i
 
 # Prerequisites
 *.d
