@@ -1,7 +1,7 @@
 #ifndef _BOOT_STRING_H
 #define _BOOT_STRING_H
 
-#include "type.h"
+#include "types.h"
 
 /**
  * 字符串复制，返回复制数量

@@ -1,10 +1,10 @@
 /**
  * 保护模式下屏幕显示
  */
-#ifndef _PRINTK_H
-#define _PRINTK_H
+#ifndef _HELLOOS_PRINTK_H
+#define _HELLOOS_PRINTK_H
 
-#include "type.h"
+#include "types.h"
 
 #define VGA_BASE 0xb8000
 #define VGA_END  0xbffff

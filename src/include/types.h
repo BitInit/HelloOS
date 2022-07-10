@@ -1,5 +1,5 @@
-#ifndef _BOOT_TPYE_H
-#define _BOOT_TYPE_H
+#ifndef _HELLOOS_TPYES_H
+#define _HELLOOS_TPYES_H
 
 #define NULL 0
 #define TRUE 1
@@ -20,5 +20,7 @@ typedef long int_t;
 typedef unsigned long long uint64_t;
 typedef long long int64_t;
 
+typedef unsigned long uintptr_t;
+typedef unsigned long adr_t;
 
 #endif

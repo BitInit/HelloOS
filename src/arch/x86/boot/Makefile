@@ -1,5 +1,5 @@
 ASFLAGS = --64
-CFLAGS = -I../../../lib/include --static -fno-pie -fno-builtin -fno-stack-protector -m64
+CFLAGS = -I../../../include --static -fno-pie -fno-builtin -fno-stack-protector -m64
 BOOT_OBJS = multiboot2.o
 
 all: clean build

@@ -2,7 +2,7 @@
 #include "printk.h"
 #include "mm.h"
 
-extern global_mm_descriptor_t global_mm_descriptor;
+extern global_mm_descriptor_t gmdsc;
 static void parse_sys_info(multiboot_uint64_t mb2_info_addr);
 
 int kernel_start(multiboot_uint64_t mb2_magic, multiboot_uint64_t mb2_info_addr) {
@@ -41,13 +41,13 @@ static void _init_memory(struct multiboot_tag *tag) {
 
     uint32_t i = 0;
     while ((uint8_t*)entry < (uint8_t*)mmap + mmap->size) {
-        global_mm_descriptor.e820[i].addr = entry->addr;
-        global_mm_descriptor.e820[i].len = entry->len;
-        global_mm_descriptor.e820[i].type = entry->type;
+        gmdsc.e820[i].addr = entry->addr;
+        gmdsc.e820[i].len = entry->len;
+        gmdsc.e820[i].type = entry->type;
         i++;
         
         entry = (struct multiboot_mmap_entry*)((uint8_t*)entry + mmap->entry_size);
     }
-    global_mm_descriptor.e820_num = i;
+    gmdsc.e820_num = i;
     init_memory();
 }

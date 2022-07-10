@@ -1,5 +1,5 @@
 #include "printk.h"
-#include "string.h"
+#include "kstring.h"
 #include <stdarg.h>
 
 #define MAX_ROW 25

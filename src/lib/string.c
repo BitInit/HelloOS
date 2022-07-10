@@ -1,4 +1,4 @@
-#include "string.h"
+#include "kstring.h"
 
 uint32_t strcpy(char *dst, char *src) {
     uint32_t num = 0;

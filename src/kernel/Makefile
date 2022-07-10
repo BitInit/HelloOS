@@ -1,4 +1,4 @@
-CFLAGS = -c -I../lib/include -I../include \
+CFLAGS = -c -I../include -I../include \
 	-I./include \
 	--static -fno-pie -fno-builtin -fno-stack-protector -m64
 KERNLE_OBJS = kernel.o mm.o

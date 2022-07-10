@@ -1,4 +1,4 @@
-CFLAGS = -c -I./include --static -fno-pie -fno-builtin -fno-stack-protector -m64
+CFLAGS = -c -I../include --static -fno-pie -fno-builtin -fno-stack-protector -m64
 OBJS = printk.o string.o
 
 all: clean build
