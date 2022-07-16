@@ -130,7 +130,7 @@ void kcolor_printf(uint8_t color, const char *fmt, ...) {
     va_end(args);
 }
 
-void kerror(const char *fmt, ...) {
+void kerrorf(const char *fmt, ...) {
     va_list args;
     va_start(args, fmt);
     _printf(WORD_RED, fmt, args);

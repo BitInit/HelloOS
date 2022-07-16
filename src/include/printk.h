@@ -11,6 +11,8 @@
 
 #define WORD_RED 0x04
 #define WORD_WHITE 0x07
+#define WORD_BROWN  0x06
+#define WORD_YELLOW 0x0E
 
 /**
  * 清屏
@@ -30,6 +32,6 @@ void kerr_printf(const char *fmt, ...);
  */
 void kcolor_printf(uint8_t color, const char *fmt, ...);
 
-void kerror(const char *fmt, ...);
+void kerrorf(const char *fmt, ...);
 
 #endif

@@ -69,7 +69,15 @@ multiboot_entry:
     or $0x03, %ebx
     mov %ebx, 0(%eax)
     # 页目录表
+    mov $512, %ecx
     mov $pd, %eax
+    mov $0x83, %ebx
+.pd_loop:
+    mov %ebx, 0(%eax)
+    add $0x200000, %ebx
+    add $0x08, %eax
+    loop .pd_loop
+    /*mov $pd, %eax
     mov $pt, %ebx
     or $0x03, %ebx
     mov %ebx, 0(%eax)
@@ -81,7 +89,7 @@ multiboot_entry:
     mov %ebx, 0(%eax)
     add $0x1000, %ebx
     add $0x08, %eax
-    loop .pt_loop
+    loop .pt_loop*/
 
     # 设置 CR3
     mov $pml4, %eax

@@ -1,6 +1,8 @@
 #ifndef _HELLOOS_LIST_H
 #define _HELLOOS_LIST_H
 
+#include "printk.h"
+
 typedef struct list_head {
     struct list_head *prev, *next;
 } list_head_t;

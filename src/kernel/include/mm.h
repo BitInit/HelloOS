@@ -53,6 +53,17 @@ typedef struct {
     uint32_t    mf_uindx:24;        // 分配计数
 }__attribute__((packed)) msadrflgs_t;
 
+#define  PF_NO_ALLOC (0)
+#define  PF_ALLOC (1)
+#define  PF_NO_SHARED (0)
+#define  PF_NO_SWAP (0)
+#define  PF_NO_CACHE (0)
+#define  PF_NO_KMAP (0)
+#define  PF_NO_LOCK (0)
+#define  PF_NO_DIRTY (0)
+#define  PF_NO_BUSY (0)
+#define  PF_RV2_VAL (0)
+#define  PF_INIT_PADRS (0)
 /**
  * pyhsical address flags
  */
@@ -66,7 +77,7 @@ typedef struct {
     uint64_t    pf_dirty:1;         // 脏位
     uint64_t    pf_busy:1;          // 忙位
     uint64_t    pf_rv2:4;           // 保留位
-    uint64_t    pf_phyadr;          // 页物理地址
+    uint64_t    pf_phyadr:52;       // 页物理地址
 }__attribute__((packed)) phyadrflgs_t;
 
 /**
@@ -114,6 +125,9 @@ typedef struct {
 typedef struct {
     E820_t      e820[32];
     uint_t      e820_num;
+
+    msadrdsc_t  *msadrdscstart;
+    memarea_t   *memareastart;
 } global_mm_descriptor_t;
 
 global_mm_descriptor_t gmdsc;
