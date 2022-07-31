@@ -1,5 +1,5 @@
-#ifndef _HELLOOS_KKPRINT
-#define _HELLOOS_KKPRINT
+#ifndef _HELLOOS_KPRINT_H
+#define _HELLOOS_KPRINT_H
 
 #include "printk.h"
 

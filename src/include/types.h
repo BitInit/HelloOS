@@ -23,4 +23,6 @@ typedef long long int64_t;
 typedef unsigned long uintptr_t;
 typedef unsigned long adr_t;
 
+typedef uint8_t bool_t;
+
 #endif

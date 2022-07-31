@@ -90,48 +90,67 @@ typedef struct {
 }__attribute__((packed)) msadrdsc_t;
 
 /**
- * memory area
- */
-typedef struct {
-    list_head_t ma_list;            // 内存区链表
-    uint_t      ma_stus;            // 内存区状态
-    uint_t      ma_flgs;            // 内存区标志
-    uint_t      ma_type;            // 内存区类型
-    uint_t      ma_pgsum;           // 内存区总页数
-    uint_t      ma_allocpg;         // 内存区已分配页数
-    uint_t      ma_freepg;          // 内存区空闲页数
-    uint_t      ma_resvpg;          // 内存区保留页数
-    uint_t      ma_horizline;       // 内存区分配时的水位线
-    adr_t       ma_startadr;        // 内存区开始地址
-    adr_t       ma_endadr;          // 内存区结束地址
-    uint_t      ma_sz;              // 内存区大小
-} memarea_t;
-
-/**
  * block alloc free head list
  */
 typedef struct {
-    uint32_t    af_stus;            // 状态
-    uint_t      af_oder;            // 页面数的位移量
-    uint_t      af_oderpgnr;        // 位移量对应的页面数，位移量为 2，则值为 1<<2=4
+    // uint32_t    af_stus;            // 状态
+    // uint_t      af_oder;            // 页面数的位移量
+    // uint_t      af_oderpgnr;        // 位移量对应的页面数，位移量为 2，则值为 1<<2=4
     uint_t      af_objnr;           // msadrdsc_t 总数
     uint_t      af_freeobjnr;       // 空闲 msadrdsc_t 数
+    uint_t      af_resvpg;          // 内存区保留 msadrdsc_t 数
     uint_t      af_allocindx;       // bafhlst_t 分配计数
     uint_t      af_freeindx;        // bafhlst_t 释放计数
     list_head_t af_freelst;         // 空闲 msadrdsc_t 链表
     list_head_t af_alloclst;        // 已分配 msadrdsc_t 链表
 } bafhlst_t;
 
+#define MA_NUM          3
+#define MA_TYPE_HWAD    1
+#define MA_TYPE_KRNL    2
+#define MA_TYPE_PROC    3
+#define MA_HWAD_START   0x0000000
+#define MA_KRNL_START   0x2000000
+#define MA_PROC_START   0x8000000
+#define MA_HWAD_END     (MA_KRNL_START-1)
+#define MA_HWAD_LEN     (MA_KRNL_END-MA_HWAD_START+1)
+#define MA_KRNL_END     (MA_PROC_START-1)
+#define MA_KRNL_LEN     (MA_KRNL_END-MA_KRNL_START+1)
+#define MA_PROC_END     0x00ffffffffffffff
+#define MA_PROC_LEN     (MA_PROC_END-MA_PROC_START+1)
+/**
+ * memory area
+ */
+typedef struct {
+    uint_t      ma_stus;            // 内存区状态
+    uint_t      ma_flgs;            // 内存区标志
+    uint_t      ma_type;            // 内存区类型
+    uint_t      ma_horizline;       // 内存区分配时的水位线
+    uint_t      ma_startadr;        // 内存区开始地址
+    uint_t      ma_endadr;          // 内存区结束地址
+    uint_t      ma_sz;              // 内存区大小
+    bafhlst_t   bafhlst;            // 块分配
+} memarea_t;
+
 typedef struct {
     E820_t      e820[32];
     uint_t      e820_num;
 
+    uint_t      kernel_start_addr;
+    uint_t      kernel_end_addr;
     msadrdsc_t  *msadrdscstart;
-    memarea_t   *memareastart;
+    uint_t      msadrdsc_sz;
+    memarea_t   memarea[MA_NUM];
 } global_mm_descriptor_t;
 
 global_mm_descriptor_t gmdsc;
 
 void init_memory();
+
+/**
+ * @ma_type: MA_TYPE_HWAD/MA_TYPE_KRNL/MA_TYPE_PROC
+ * @return: 分配一页
+ */
+msadrdsc_t* alloc_page(uint_t ma_type);
 
 #endif

@@ -1,8 +1,6 @@
 #ifndef _HELLOOS_LIST_H
 #define _HELLOOS_LIST_H
 
-#include "printk.h"
-
 typedef struct list_head {
     struct list_head *prev, *next;
 } list_head_t;
@@ -64,6 +62,15 @@ static inline void list_del(list_head_t *prev, list_head_t *next) {
  */
 static inline void list_del_entry(list_head_t *entry) {
     __list_del(entry->prev, entry->next);
+    list_init(entry);
 }
+
+/**
+ * list_empty - list is empty?
+ * @head: list head
+ */
+static inline int list_empyt(const list_head_t *head) {
+    return head->next == head;
+} 
 
 #endif

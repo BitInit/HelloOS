@@ -198,6 +198,7 @@ mb2_magic: .quad 0x00
 mb2_info: .quad 0x00
 
 .section .bss
+.align 0x1000
 STACK:
     .skip 4096 * 4
 STACK_TOP:
