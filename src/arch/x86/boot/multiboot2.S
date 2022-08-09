@@ -8,7 +8,7 @@
 #endif /* KERN_VBE_MODE */
 
 .code32
-.section .text
+.section .bs
 .globl _start
 _start:
     jmp multiboot_entry
@@ -63,6 +63,7 @@ multiboot_entry:
     mov $pdpt, %ebx
     or $0x03, %ebx
     mov %ebx, 0(%eax)
+    mov %ebx, 256(%eax)
     # 页目录指针表
     mov $pdpt, %eax
     mov $pd, %ebx
@@ -77,19 +78,6 @@ multiboot_entry:
     add $0x200000, %ebx
     add $0x08, %eax
     loop .pd_loop
-    /*mov $pd, %eax
-    mov $pt, %ebx
-    or $0x03, %ebx
-    mov %ebx, 0(%eax)
-    # 页表
-    mov $512, %ecx
-    mov $pt, %eax
-    mov $0x03, %ebx
-.pt_loop:
-    mov %ebx, 0(%eax)
-    add $0x1000, %ebx
-    add $0x08, %eax
-    loop .pt_loop*/
 
     # 设置 CR3
     mov $pml4, %eax
@@ -134,7 +122,7 @@ _start64:
     # x86_64 位，函数调用通过寄存器传参
     movq mb2_info, %rsi
     movq mb2_magic, %rdi
-    call kernel_start
+    # call kernel_start
 
     hlt
     ret
@@ -142,15 +130,13 @@ _start64:
 /*
  * 临时页表，4KB/页
  */
-.section .data
+.section .bs.data
 .align 0x1000
 pml4: /* 顶级页目录表 */
     .skip 0x1000
 pdpt: /* 页目录指针表*/
     .skip 0x1000
 pd: /* 页目录表 */
-    .skip 0x1000
-pt: /* 页表 */
     .skip 0x1000
 
 .align 16
@@ -197,7 +183,7 @@ gdt64_pointer64:
 mb2_magic: .quad 0x00
 mb2_info: .quad 0x00
 
-.section .bss
+.section .bs.bss
 .align 0x1000
 STACK:
     .skip 4096 * 4

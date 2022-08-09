@@ -41,8 +41,7 @@ char* numberk(char *buf, int64_t n, int32_t base) {
             *--p = "0123456789abcdef"[n % base];
         } while (n /= base);
     }
-    while (*p != 0)
-    {
+    while (*p != 0) {
         *buf++ = *p++;
     }
     return buf;

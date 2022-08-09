@@ -1,7 +1,7 @@
-CFLAGS = -c -I../include -I../include \
+CFLAGS = -c -I../include -I./mm\
 	-I./include \
-	--static -fno-pie -fno-builtin -fno-stack-protector -m64
-KERNLE_OBJS = kernel.o mm.o
+	--static -mcmodel=large -fno-pie -fno-builtin -fno-stack-protector -m64
+KERNLE_OBJS = kernel.o mm/mm.o
 
 all: clean build
 
@@ -11,4 +11,4 @@ build: $(KERNLE_OBJS)
 	@gcc $(CFLAGS) -o $@ $<
 
 clean: 
-	@rm -rf *.o
+	@rm -rf *.o mm/*.o

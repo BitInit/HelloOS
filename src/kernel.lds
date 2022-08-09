@@ -5,14 +5,37 @@ ENTRY(_start)
 SECTIONS
 {
     . = 32M;
+    .boot : {
+        KEEP(*(.bs))
+        *(.bs.text)
+        *(.bs.data)
+        *(.bs.bss)
+        *(.bs.rodata)
+        . = ALIGN(4096);
+    }
+
+    VMA = 0xffff800000000000;
+    . += VMA;
+    . = ALIGN(32768);
     _start_kernel = .;
-    .text : { *(.text) }
+    start_text = .;
+    .text (start_text): AT(start_text - VMA) { *(.text) }
 
-    .data : ALIGN(4) { *(.data) }
+    . = ALIGN(32768);
+    start_data = .;
+    .data (start_data): AT(start_data - VMA) { *(.data) }
 
-    .rodata : ALIGN(4) { *(.rodata) *(.rodata.*) }
+    . = ALIGN(32768);
+    start_rodata = .;
+    .rodata (start_rodata): AT(start_rodata - VMA) { *(.rodata) *(.rodata.*) }
 
-    .bss : ALIGN(4) { *(.bss) }
+    . = ALIGN(32768);
+    start_bss = .;
+    .bss (start_bss): AT(start_bss - VMA) { *(.bss) }
 
     _end_kernel = .;
+
+    /DISCARD/ : {
+		*(.comment)
+	}
 }
