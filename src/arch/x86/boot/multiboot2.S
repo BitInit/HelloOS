@@ -8,7 +8,7 @@
 #endif /* KERN_VBE_MODE */
 
 .code32
-.section .bs
+.section .bs.text
 .globl _start
 _start:
     jmp multiboot_entry
@@ -63,7 +63,7 @@ multiboot_entry:
     mov $pdpt, %ebx
     or $0x03, %ebx
     mov %ebx, 0(%eax)
-    mov %ebx, 256(%eax)
+    mov %ebx, 2048(%eax) /* 一个页地址占8B，则为 256*8 */
     # 页目录指针表
     mov $pdpt, %eax
     mov $pd, %ebx
@@ -101,9 +101,21 @@ multiboot_entry:
     jmp $0x8, $_start64
     hlt
     ret
+/*.code64
+ready_to_start64:
 
+    movq switch_seg(%rip), %rax
+    pushq $0x08
+    pushq %rax
+    lretq
+
+switch_seg:
+    .quad _start64
+*/
 .extern kernel_start
 .code64
+go_to_kernel:
+    .quad kernel_start
 _start64:
     # 更新
     mov $0x10, %rax
@@ -120,12 +132,13 @@ _start64:
     mov $0, %rbp
 
     # x86_64 位，函数调用通过寄存器传参
-    movq mb2_info, %rsi
-    movq mb2_magic, %rdi
+    # movq mb2_info, %rsi
+    # movq mb2_magic, %rdi
     # call kernel_start
-
-    hlt
-    ret
+    movq go_to_kernel(%rip), %rax
+    pushq $0x08
+    pushq %rax
+    lretq
 
 /*
  * 临时页表，4KB/页
@@ -141,49 +154,19 @@ pd: /* 页目录表 */
 
 .align 16
 gdt64:
-null_desc:
-    .short 0xFFFF
-    .short 0
-    .byte 0
-    .byte 0
-    .byte 0
-    .byte 0
-code_desc:
-    .short 0
-    .short 0
-    .byte 0
-    .byte 0x9A
-    .byte 0x20
-    .byte 0
-data_desc:
-    .short 0
-    .short 0
-    .byte 0
-    .byte 0x92
-    .byte 0
-    .byte 0
-user_code_desc:
-    .short 0
-    .short 0
-    .byte 0
-    .byte 0xFA
-    .byte 0x20
-    .byte 0
-user_data_desc:
-    .short 0
-    .short 0
-    .byte 0
-    .byte 0xF2
-    .byte 0
-    .byte 0
+    .quad 0x0000000000000000
+    .quad 0x0020980000000000
+    .quad 0x0000920000000000
 gdt64_pointer64:
     .short gdt64_pointer64-gdt64-1
     .quad gdt64
 
+.globl mb2_magic
 mb2_magic: .quad 0x00
+.globl mb2_info
 mb2_info: .quad 0x00
 
-.section .bs.bss
+
 .align 0x1000
 STACK:
     .skip 4096 * 4

@@ -6,18 +6,13 @@ SECTIONS
 {
     . = 32M;
     .boot : {
-        KEEP(*(.bs))
-        *(.bs.text)
-        *(.bs.data)
-        *(.bs.bss)
-        *(.bs.rodata)
+        *(.bs*)
         . = ALIGN(4096);
     }
 
     VMA = 0xffff800000000000;
     . += VMA;
-    . = ALIGN(32768);
-    _start_kernel = .;
+    _start_kernel = . - VMA;
     start_text = .;
     .text (start_text): AT(start_text - VMA) { *(.text) }
 
@@ -33,9 +28,10 @@ SECTIONS
     start_bss = .;
     .bss (start_bss): AT(start_bss - VMA) { *(.bss) }
 
-    _end_kernel = .;
+    _end_kernel = . - VMA;
 
     /DISCARD/ : {
 		*(.comment)
+        *(.eh_frame)
 	}
 }

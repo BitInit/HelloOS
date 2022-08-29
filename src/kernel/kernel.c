@@ -3,16 +3,19 @@
 #include "mm.h"
 
 extern global_mm_descriptor_t gmdsc;
+extern multiboot_uint64_t mb2_magic;
+extern multiboot_uint64_t mb2_info;
 static void parse_sys_info(multiboot_uint64_t mb2_info_addr);
 
-int kernel_start(multiboot_uint64_t mb2_magic, multiboot_uint64_t mb2_info_addr) {
-    if (mb2_magic != MULTIBOOT2_BOOTLOADER_MAGIC || mb2_info_addr & 7) {
+int kernel_start() {
+    kprintf("hello kernel %x  %x\n", mb2_magic, mb2_info);
+    if (mb2_magic != MULTIBOOT2_BOOTLOADER_MAGIC || mb2_info & 7) {
         return -1;
     }
     // 清屏
-    clear_screen();
+    // clear_screen();
     // 解析系统信息
-    parse_sys_info(mb2_info_addr);
+    parse_sys_info(mb2_info);
 
     while (1) ;
     return 0;

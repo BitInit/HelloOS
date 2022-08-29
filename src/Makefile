@@ -2,8 +2,8 @@ X86_BOOT = arch/x86/boot
 LIB = lib
 KERNEL = kernel
 export OBJS=$(X86_BOOT)/multiboot2.o $(LIB)/printk.o \
-	$(KERNEL)/kernel.o $(KERNEL)/mm/mm.o \
-	$(LIB)/string.o
+	 $(KERNEL)/kernel.o $(KERNEL)/mm/mm.o \
+	 $(LIB)/string.o
 
 build: 
 	make -C $(X86_BOOT) all
