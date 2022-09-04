@@ -17,7 +17,7 @@ ISO_BOOT="${ISO_PATH}/boot"
 ISO_BOOT_GRUB="${ISO_BOOT}/grub"
 mkdir -p $ISO_BOOT_GRUB
 
-cp src/kernel.elf ${ISO_BOOT}/kernel.elf
+cp kernel.elf ${ISO_BOOT}/kernel.elf
 
 # set grub.cfg
 touch "${ISO_BOOT_GRUB}/grub.cfg"

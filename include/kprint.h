@@ -2,15 +2,18 @@
 #define _HELLOOS_KPRINT_H
 
 #include "printk.h"
+#define DEBUG   TRUE
 
 #define kinfo(...) {            \
         kprintf("[info] ");     \
         kprintf(__VA_ARGS__);   \
     }
 
-#define kdebug(...) {                                                      \
-        kcolor_printf(WORD_BROWN, "[debug] (%s:%d) ", __FILE__, __LINE__); \
-        kcolor_printf(WORD_BROWN, __VA_ARGS__);                            \
+#define kdebug(...) {                                                           \
+        if (DEBUG) {                                                            \
+            kcolor_printf(WORD_BROWN, "[debug] (%s:%d) ", __FILE__, __LINE__);  \
+            kcolor_printf(WORD_BROWN, __VA_ARGS__);                             \
+        }                                                                       \
     }
 
 #define kwarn(...) {                                \

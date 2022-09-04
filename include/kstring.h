@@ -12,6 +12,6 @@ char* strncpy(char *dst, char *src, uint32_t n);
 
 uint8_t strcmp(const char *str1, const char *str2);
 
-void memset(char *p, uint8_t val, uint32_t n);
+void* memset(void *p, uint8_t val, uint_t n);
 
 #endif

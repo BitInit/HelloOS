@@ -1,11 +1,20 @@
 MAKEFLAGS = --no-print-directory
 
-all: clean build
+SRC := arch/x86/boot kernel mm
 
-build:
-	@make -C src build
-	bash build_iso.sh
+all: iso
 
-clean:
-	@make -C src clean
-	@rm -rf HelloOS*
+iso: build
+	ld -b elf64-x86-64 -z muldefs -o kernel.elf -T link.lds $(shell find $(SRC) -name "*.o")
+	@bash build_iso.sh
+
+build: $(SRC)
+	@for s in $(SRC); do \
+		make -C $$s build || exit 1; \
+	done
+
+clean: $(SRC)
+	@for s in $(SRC); do \
+		make -C $$s clean || exit 1; \
+	done
+	rm -rf *.elf *.iso

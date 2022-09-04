@@ -13,7 +13,7 @@ int kernel_start() {
         return -1;
     }
     // 清屏
-    // clear_screen();
+    clear_screen();
     // 解析系统信息
     parse_sys_info(mb2_info);
 
@@ -42,15 +42,20 @@ static void _init_memory(struct multiboot_tag *tag) {
     struct multiboot_tag_mmap *mmap = (struct multiboot_tag_mmap*) tag;
     struct multiboot_mmap_entry *entry = mmap->entries;
 
-    uint32_t i = 0;
+    uint32_t i = 0, available_size = 0;
     while ((uint8_t*)entry < (uint8_t*)mmap + mmap->size) {
         gmdsc.e820[i].addr = entry->addr;
         gmdsc.e820[i].len = entry->len;
         gmdsc.e820[i].type = entry->type;
+        kprintf("[info] e820 memory: addr:%x len:%d type:%d\n", gmdsc.e820[i].addr, gmdsc.e820[i].len, gmdsc.e820[i].type);
+        if (gmdsc.e820[i].type == E820_TYPE_AVAILABLE) {
+            available_size++;
+        }
         i++;
         
         entry = (struct multiboot_mmap_entry*)((uint8_t*)entry + mmap->entry_size);
     }
     gmdsc.e820_num = i;
+    gmdsc.e820_available_size = available_size;
     init_memory();
 }

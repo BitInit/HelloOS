@@ -5,6 +5,7 @@ ENTRY(_start)
 SECTIONS
 {
     . = 32M;
+    _start_kernel = .;
     .boot : {
         *(.bs*)
         . = ALIGN(4096);
@@ -12,7 +13,6 @@ SECTIONS
 
     VMA = 0xffff800000000000;
     . += VMA;
-    _start_kernel = . - VMA;
     start_text = .;
     .text (start_text): AT(start_text - VMA) { *(.text) }
 
