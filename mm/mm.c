@@ -9,6 +9,7 @@ void page_bitmap_init(uint_t start_addr);
 void pages_struct_init(uint_t start_addr);
 void zones_struct_init(uint_t start_addr);
 void construct_mem_struct();
+unsigned long page_init(mm_page_t *page, uint_t flags);
 
 void init_memory() {
     gmdsc.kernel_start_phyaddr = (uint_t)&_start_kernel;
@@ -23,6 +24,8 @@ void init_memory() {
 
     start_addr = PAGE_4K_ALIGN(gmdsc.pages_struct + gmdsc.pages_size);
     zones_struct_init(start_addr);
+
+    gmdsc.end_of_struct = PAGE_4K_ALIGN(gmdsc.zones_struct + gmdsc.zones_size);
 
     construct_mem_struct();
 }
@@ -88,4 +91,28 @@ void construct_mem_struct() {
         }
         zone_idx++;
     }
+    int kernel_start = gmdsc.kernel_start_phyaddr >> PAGE_4K_SHIFT,
+        kernel_end = VIR2PHY(gmdsc.end_of_struct) >> PAGE_4K_SHIFT;
+    for (int i = kernel_start; i < kernel_end; i++) {
+        page_init(gmdsc.pages_struct+i, PG_PTable_Maped|PG_Kernel_Init|PG_Active|PG_Kernel);
+    }
+}
+
+unsigned long page_init(mm_page_t *page, uint_t flags) {
+    if (!page->attribute) {
+        *(gmdsc.page_bits + ((page->phy_addr >> PAGE_4K_SHIFT) >> 6)) |= 1UL << (page->phy_addr >> PAGE_4K_SHIFT) % 64;
+		page->attribute = flags;
+		page->ref_count++;
+		page->zone->page_using_count++;
+        page->zone->page_free_count--;
+        page->zone->total_pages_link++;
+    } else if ((page->attribute&PG_Referenced) || (page->attribute&PG_K_Share_To_U) || (flags&PG_Referenced) || (flags&PG_K_Share_To_U)) {
+        page->attribute |= flags;
+        page->ref_count++;
+        page->zone->total_pages_link++;
+    } else {
+        *(gmdsc.page_bits + ((page->phy_addr >> PAGE_4K_SHIFT) >> 6)) |= 1UL << (page->phy_addr >> PAGE_4K_SHIFT) % 64;
+        page->attribute |= flags;
+    }
+    return 0;
 }

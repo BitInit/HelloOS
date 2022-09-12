@@ -1,5 +1,6 @@
 #include "multiboot2.h"
 #include "printk.h"
+#include "kprint.h"
 #include "mm.h"
 
 extern global_mm_descriptor_t gmdsc;
@@ -8,7 +9,6 @@ extern multiboot_uint64_t mb2_info;
 static void parse_sys_info(multiboot_uint64_t mb2_info_addr);
 
 int kernel_start() {
-    kprintf("hello kernel %x  %x\n", mb2_magic, mb2_info);
     if (mb2_magic != MULTIBOOT2_BOOTLOADER_MAGIC || mb2_info & 7) {
         return -1;
     }
@@ -16,6 +16,13 @@ int kernel_start() {
     clear_screen();
     // 解析系统信息
     parse_sys_info(mb2_info);
+
+    mm_page_t *page;
+    page = alloc_pages(ZONE_NORMAL, 64, PG_PTable_Maped|PG_Active|PG_Kernel);
+    for (int i = 0; i <= 64; i++) {
+        kdebug("page:%d  attr:%x  addr:%x\n", i, (page+i)->attribute, (page+i)->phy_addr);
+    }
+    uint_t *gdt = get_gdt();
 
     while (1) ;
     return 0;
