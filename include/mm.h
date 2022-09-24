@@ -8,8 +8,8 @@
 #define PAGE_4K_SIZE                  (1UL << PAGE_4K_SHIFT)
 #define PAGE_4K_MASK                  (~(PAGE_4K_SIZE - 1))
 #define PAGE_4K_ALIGN(addr)           (((uint_t)(addr) + PAGE_4K_SIZE - 1) & PAGE_4K_MASK)
-#define PHY2VIR(addr)                 (KERNEL_VIRADDR | addr)
-#define VIR2PHY(addr)                 ((~KERNEL_VIRADDR) & addr)
+#define PHY2VIR(addr)                 (KERNEL_VIRADDR | ((uint_t)(addr)))
+#define VIR2PHY(addr)                 ((~KERNEL_VIRADDR) & ((uint_t)(addr)))
 
 #define E820_TYPE_AVAILABLE              1
 #define E820_TYPE_RESERVED               2

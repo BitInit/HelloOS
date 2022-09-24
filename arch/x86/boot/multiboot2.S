@@ -43,10 +43,6 @@ multiboot_header_end:
 
 multiboot_entry:
     cli
-    # reset EFLAGS
-    pushl $0
-    popf
-
     # the magic value
     mov %eax, mb2_magic
     # the pointer to the Multiboot information structure
@@ -101,22 +97,33 @@ multiboot_entry:
     jmp $0x8, $_start64
     hlt
     ret
-/*.code64
-ready_to_start64:
 
-    movq switch_seg(%rip), %rax
-    pushq $0x08
-    pushq %rax
-    lretq
-
-switch_seg:
-    .quad _start64
-*/
 .extern kernel_start
 .code64
 go_to_kernel:
     .quad kernel_start
 _start64:
+    # 配置 IDT
+    lidt idt_pointer64(%rip)
+setup_IDT:							
+	leaq	ignore_int(%rip),	%rdx
+	movq	$(0x08 << 16),	%rax
+	movw	%dx,	%ax
+	movq	$(0x8E00 << 32),	%rcx
+	addq	%rcx,	%rax
+	movl	%edx,	%ecx
+	shrl	$16,	%ecx
+	shlq	$48,	%rcx
+	addq	%rcx,	%rax
+	shrq	$32,	%rdx
+	leaq	IDT_Table(%rip),	%rdi
+	mov	$256,	%rcx
+rp_sidt:
+	movq	%rax,	(%rdi)
+	movq	%rdx,	8(%rdi)
+	addq	$0x10,	%rdi
+	dec	%rcx
+	jne	rp_sidt
     # 更新
     mov $0x10, %rax
     mov %rax, %ds
@@ -132,12 +139,45 @@ _start64:
     mov $0, %rbp
 
     # x86_64 位，函数调用通过寄存器传参
-    # movq mb2_info, %rsi
-    # movq mb2_magic, %rdi
-    # call kernel_start
     movq go_to_kernel(%rip), %rax
     pushq $0x08
     pushq %rax
+    lretq
+
+.extern IRQ_nothing
+go_to_irp_nothing:
+    .quad IRQ_nothing
+ignore_int:
+	cld
+	pushq	%rax
+	pushq	%rbx
+	pushq	%rcx
+	pushq	%rdx
+	pushq	%rbp
+	pushq	%rdi
+	pushq	%rsi
+
+	pushq	%r8
+	pushq	%r9
+	pushq	%r10
+	pushq	%r11
+	pushq	%r12
+	pushq	%r13
+	pushq	%r14
+	pushq	%r15
+
+	movq	%es,	%rax
+	pushq	%rax
+	movq	%ds,	%rax
+	pushq	%rax
+
+	movq	$0x10,	%rax
+	movq	%rax,	%ds
+	movq	%rax,	%es
+
+	movq    go_to_irp_nothing(%rip), %rax
+    pushq   $0x08
+    pushq   %rax
     lretq
 
 /*
@@ -153,19 +193,26 @@ pd: /* 页目录表 */
     .skip 0x1000
 
 .align 16
-gdt64:
+.globl GDT_Table
+GDT_Table:
     .quad 0x0000000000000000
     .quad 0x0020980000000000
     .quad 0x0000920000000000
 gdt64_pointer64:
-    .short gdt64_pointer64-gdt64-1
-    .quad gdt64
+    .short gdt64_pointer64-GDT_Table-1
+    .quad GDT_Table
+
+.global IDT_Table
+IDT_Table:
+    .fill 512, 8, 0
+idt_pointer64:
+    .short idt_pointer64-IDT_Table-1
+    .quad IDT_Table
 
 .globl mb2_magic
 mb2_magic: .quad 0x00
 .globl mb2_info
 mb2_info: .quad 0x00
-
 
 .align 0x1000
 STACK:

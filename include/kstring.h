@@ -8,6 +8,8 @@
  */
 uint32_t strcpy(char *dst, char *src);
 
+int strlen(char *String);
+
 char* strncpy(char *dst, char *src, uint32_t n);
 
 uint8_t strcmp(const char *str1, const char *str2);

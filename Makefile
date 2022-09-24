@@ -2,7 +2,7 @@ MAKEFLAGS = --no-print-directory
 
 SRC := arch/x86/boot kernel mm
 
-all: iso
+all: clean iso
 
 iso: build
 	ld -b elf64-x86-64 -z muldefs -o kernel.elf -T link.lds $(shell find $(SRC) -name "*.o")

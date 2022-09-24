@@ -2,6 +2,7 @@
 #include "printk.h"
 #include "kprint.h"
 #include "mm.h"
+#include "irq.h"
 
 extern global_mm_descriptor_t gmdsc;
 extern multiboot_uint64_t mb2_magic;
@@ -17,12 +18,17 @@ int kernel_start() {
     // 解析系统信息
     parse_sys_info(mb2_info);
 
-    mm_page_t *page;
-    page = alloc_pages(ZONE_NORMAL, 64, PG_PTable_Maped|PG_Active|PG_Kernel);
-    for (int i = 0; i <= 64; i++) {
-        kdebug("page:%d  attr:%x  addr:%x\n", i, (page+i)->attribute, (page+i)->phy_addr);
-    }
-    uint_t *gdt = get_gdt();
+    // 初始化内存
+    init_memory();
+    // mm_page_t *page;
+    // page = alloc_pages(ZONE_NORMAL, 64, PG_PTable_Maped|PG_Active|PG_Kernel);
+    // for (int i = 0; i <= 64; i++) {
+    //     kdebug("page:%d  attr:%x  addr:%x\n", i, (page+i)->attribute, (page+i)->phy_addr);
+    // }
+    // uint_t *gdt = get_gdt();
+
+    // 初始化中断
+    init_interrupt();
 
     while (1) ;
     return 0;
@@ -64,5 +70,4 @@ static void _init_memory(struct multiboot_tag *tag) {
     }
     gmdsc.e820_num = i;
     gmdsc.e820_available_size = available_size;
-    init_memory();
 }
