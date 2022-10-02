@@ -14,4 +14,8 @@ void io_out8(unsigned short port, unsigned char value);
 
 unsigned char io_in8(unsigned short port);
 
+static inline void wrmsr(unsigned long address,unsigned long value) {
+	__asm__ __volatile__("wrmsr	\n\t"::"d"(value >> 32),"a"(value & 0xffffffff),"c"(address):"memory");	
+}
+
 #endif

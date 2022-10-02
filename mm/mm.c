@@ -2,8 +2,14 @@
 #include "kprint.h"
 #include "kstring.h"
 
-extern uint_t _start_kernel;
-extern uint_t _end_kernel;
+extern char _start_kernel;
+extern char _end_kernel;
+extern char pml4;
+extern char start_text, end_text;
+extern char start_data, end_data;
+extern char start_rodata, end_rodata;
+extern char start_bss, end_bss;
+extern char STACK;
 
 void page_bitmap_init(uint_t start_addr);
 void pages_struct_init(uint_t start_addr);
@@ -12,6 +18,17 @@ void construct_mem_struct();
 unsigned long page_init(mm_page_t *page, uint_t flags);
 
 void init_memory() {
+    Global_CR3 = (unsigned long*)PHY2VIR(&pml4);
+    gmdsc.start_text = (uint_t)&start_text;
+    gmdsc.end_text = (uint_t)&end_text;
+    gmdsc.start_data = (uint_t)&start_data;
+    gmdsc.end_data = (uint_t)&end_data;
+    gmdsc.start_rodata = (uint_t)&start_rodata;
+    gmdsc.end_rodata = (uint_t)&end_rodata;
+    gmdsc.start_bss = (uint_t)&start_bss;
+    gmdsc.end_bss = (uint_t)&end_bss;
+    gmdsc.start_stack = (uint_t)PHY2VIR(&STACK);
+
     gmdsc.kernel_start_phyaddr = (uint_t)&_start_kernel;
     gmdsc.kernel_end_phyaddr = (uint_t)&_end_kernel;
     kinfo("kernel code start_phyaddr:%x end_phyaddr:%x\n", gmdsc.kernel_start_phyaddr, gmdsc.kernel_end_phyaddr);

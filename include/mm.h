@@ -11,6 +11,12 @@
 #define PHY2VIR(addr)                 (KERNEL_VIRADDR | ((uint_t)(addr)))
 #define VIR2PHY(addr)                 ((~KERNEL_VIRADDR) & ((uint_t)(addr)))
 
+typedef struct {
+    unsigned long pml4t;
+} pml4t_t;
+
+unsigned long *Global_CR3 = NULL;
+
 #define E820_TYPE_AVAILABLE              1
 #define E820_TYPE_RESERVED               2
 #define E820_TYPE_ACPI_RECLAIMABLE       3
@@ -86,6 +92,11 @@ typedef struct {
     uint_t      kernel_start_phyaddr;   // 内核程序开始物理地址
     uint_t      kernel_end_phyaddr;     // 内核程序结束物理地址
     uint_t      end_of_struct;          // 内存管理结构的结束地址
+    uint_t      start_text, end_text;   // 内核代码段
+    uint_t      start_data, end_data;   // 内核数据段
+    uint_t      start_rodata, end_rodata;   // 内核只读数据段
+    uint_t      start_bss, end_bss;     // 内核 bss 段
+    uint_t      start_stack;            // 内核栈
 } global_mm_descriptor_t;
 
 global_mm_descriptor_t gmdsc;

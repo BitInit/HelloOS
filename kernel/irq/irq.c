@@ -120,7 +120,7 @@ void init_interrupt() {
 	sti();
 }
 
-void do_IRQ(unsigned long regs,unsigned long nr) {
+void do_IRQ(unsigned long regs, unsigned long nr) {
     unsigned char x;
     switch (nr) {
     // 键盘中断
