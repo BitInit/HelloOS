@@ -14,6 +14,10 @@ void io_out8(unsigned short port, unsigned char value);
 
 unsigned char io_in8(unsigned short port);
 
+/**
+ * wrmsr（write model specific）写 msr 寄存器。
+ * msr 寄存器：
+ */
 static inline void wrmsr(unsigned long address,unsigned long value) {
 	__asm__ __volatile__("wrmsr	\n\t"::"d"(value >> 32),"a"(value & 0xffffffff),"c"(address):"memory");	
 }

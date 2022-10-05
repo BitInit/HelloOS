@@ -124,6 +124,7 @@ rp_sidt:
 	addq	$0x10,	%rdi
 	dec	%rcx
 	jne	rp_sidt
+
     # 更新
     mov $0x10, %rax
     mov %rax, %ds
@@ -132,58 +133,29 @@ rp_sidt:
     mov %rax, %gs
     mov %rax, %ss
     # 设置栈地址
-    mov $STACK_TOP, %rsp
-    # 栈地址按照 4096 字节对齐
-    and $0xFFFFFFFFFFFFF000, %rsp
-    # 帧指针修改为 0
-    mov $0, %rbp
+    mov _stack_start(%rip), %rsp
 
 SetUp_TSS64:
-    # == 设置64位的任务状态段表 ===
-    # rdx保存高8B， rax保存低8B
-    leaq TSS64_Table(%rip), %rdx    # 获取定义在process.c中的initial_tss[0]的地址
+    leaq	TSS64_Table(%rip),	%rdx
+	xorq	%rax,	%rax
+	xorq	%rcx,	%rcx
+	movq	$0x89,	%rax
+	shlq	$40,	%rax
+	movl	%edx,	%ecx
+	shrl	$24,	%ecx
+	shlq	$56,	%rcx
+	addq	%rcx,	%rax
+	xorq	%rcx,	%rcx
+	movl	%edx,	%ecx
+	andl	$0xffffff,	%ecx
+	shlq	$16,	%rcx
+	addq	%rcx,	%rax
+	addq	$103,	%rax
+	leaq	GDT_Table(%rip),	%rdi
+	movq	%rax,	80(%rdi)	//tss segment offset
+	shrq	$32,	%rdx
+	movq	%rdx,	88(%rdi)	//tss+1 segment offset
 
-    movq $0xffff800000000000, %r8
-    addq %r8, %rdx
-
-    xorq %rax, %rax
-    xorq %rcx, %rcx
-
-    # 设置TSS描述符的47：40位为1000 1001
-    movq $0x89, %rax
-    shlq $40, %rax
-
-    # 设置段基地址31:24
-    movl %edx, %ecx
-    shrl $24, %ecx
-    shlq $56, %rcx
-    addq %rcx, %rax
-
-    xorq %rcx, %rcx
-
-    # 设置段基地址23:00
-    movl %edx, %ecx
-    andl $0xffffff, %ecx # 清空ecx的中有效值的高8位（也就是上面已经赋值了的）
-    shlq $16, %rcx
-    addq %rcx, %rax
-
-    addq $103, %rax # 设置段长度
-
-    leaq GDT_Table(%rip), %rdi
-    movq %rax, 80(%rdi) # 把低八B存储到GDT第10项
-    shrq $32, %rdx
-    movq %rdx, 88(%rdi) # 高8B存到GDT第11项
-
-    # now enable SSE and the like
-    movq %cr0, %rax
-    and $0xFFFB, %ax		# clear coprocessor emulation CR0.EM
-    or $0x2, %ax			# set coprocessor monitoring  CR0.MP
-    movq %rax, %cr0
-    movq %cr4, %rax
-    or $(3 << 9), %ax		# set CR4.OSFXSR and CR4.OSXMMEXCPT at the same time
-    movq %rax, %cr4
-
-    # x86_64 位，函数调用通过寄存器传参
     movq go_to_kernel(%rip), %rax
     pushq $0x08
     pushq %rax
@@ -250,7 +222,7 @@ GDT_Table:
 	.quad	0x0000f20000000000			/*6	USER	Data	64-bit	Segment	30*/
 	.quad	0x00cf9a000000ffff			/*7	KERNEL	Code	32-bit	Segment	38*/
 	.quad	0x00cf92000000ffff			/*8	KERNEL	Data	32-bit	Segment	40*/
-	.fill	10,8,0					/*10 ~ 11 TSS (jmp one segment <9>) in long-mode 128-bit 50*/
+	.fill	10,8,0					    /*10 ~ 11 TSS (jmp one segment <9>) in long-mode 128-bit 50*/
 gdt64_pointer64:
     .short gdt64_pointer64-GDT_Table-1
     .quad GDT_Table
@@ -272,8 +244,5 @@ mb2_magic: .quad 0x00
 .globl mb2_info
 mb2_info: .quad 0x00
 
-.align 0x1000
-.global STACK
-STACK:
-    .skip 4096 * 4
-STACK_TOP:
+_stack_start:
+    .quad init_task_union + 32768

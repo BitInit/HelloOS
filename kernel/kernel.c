@@ -4,6 +4,7 @@
 #include "mm.h"
 #include "irq.h"
 #include "task.h"
+#include "gate.h"
 
 extern global_mm_descriptor_t gmdsc;
 extern multiboot_uint64_t mb2_magic;
@@ -16,6 +17,7 @@ int kernel_start() {
     }
     // 清屏
     clear_screen();
+    load_TR(10);
     // 解析系统信息
     parse_sys_info(mb2_info);
 

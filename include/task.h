@@ -22,6 +22,8 @@ struct mm_struct {
 
 #define KERNEL_CS 	(0x08)
 #define	KERNEL_DS 	(0x10)
+#define	USER_CS		(0x28)
+#define USER_DS		(0x30)
 
 // 进程切换状态信息
 struct thread_struct {

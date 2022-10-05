@@ -9,7 +9,6 @@ extern char start_text, end_text;
 extern char start_data, end_data;
 extern char start_rodata, end_rodata;
 extern char start_bss, end_bss;
-extern char STACK;
 
 void page_bitmap_init(uint_t start_addr);
 void pages_struct_init(uint_t start_addr);
@@ -27,7 +26,6 @@ void init_memory() {
     gmdsc.end_rodata = (uint_t)&end_rodata;
     gmdsc.start_bss = (uint_t)&start_bss;
     gmdsc.end_bss = (uint_t)&end_bss;
-    gmdsc.start_stack = (uint_t)PHY2VIR(&STACK);
 
     gmdsc.kernel_start_phyaddr = (uint_t)&_start_kernel;
     gmdsc.kernel_end_phyaddr = (uint_t)&_end_kernel;

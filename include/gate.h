@@ -18,6 +18,14 @@ extern struct desc_struct GDT_Table[];
 extern struct gate_struct IDT_Table[];
 extern unsigned int TSS64_Table[26];
 
+#define load_TR(n) 							\
+do{											\
+	__asm__ __volatile__(	"ltr	%%ax"	\
+		:									\
+		:"a"(n << 3)						\
+		:"memory");							\
+} while(0)
+
 #define _set_gate(gate_selector_addr, attr, ist, code_addr)	\
 do {														\
 	unsigned long __d0, __d1;								\
@@ -56,6 +64,10 @@ static inline void set_trap_gate(unsigned int n,unsigned char ist,void * addr) {
 
 static inline void set_system_gate(unsigned int n,unsigned char ist,void * addr) {
 	_set_gate(PHY2VIR(IDT_Table+n), 0xEF, ist, addr);	//P,DPL=3,TYPE=F
+}
+
+static inline void set_system_intr_gate(unsigned int n,unsigned char ist,void * addr) {
+	_set_gate(PHY2VIR(IDT_Table+n) , 0xEE, ist, addr);	//P,DPL=3,TYPE=E
 }
 
 void set_tss64(unsigned long rsp0, unsigned long rsp1, unsigned long rsp2,

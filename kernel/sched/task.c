@@ -13,6 +13,7 @@ void __switch_to(struct task_struct *prev,struct task_struct *next) {
 
 	__asm__ __volatile__("movq	%%fs,	%0 \n\t":"=a"(prev->thread->fs));
 	__asm__ __volatile__("movq	%%gs,	%0 \n\t":"=a"(prev->thread->gs));
+	kinfo("next:%lx\n", next);
 
 	__asm__ __volatile__("movq	%0,	%%fs \n\t"::"a"(next->thread->fs));
 	__asm__ __volatile__("movq	%0,	%%gs \n\t"::"a"(next->thread->gs));
@@ -69,18 +70,18 @@ unsigned long do_fork(struct pt_regs * regs, unsigned long clone_flags, unsigned
 	tsk = (struct task_struct*)PHY2VIR(p->phy_addr);
 	kinfo("struct task_struct address:%#018lx\n", (unsigned long)tsk);
 
-	memset(tsk,0,sizeof(*tsk));
+	memset(tsk, 0, sizeof(struct task_struct)+sizeof(struct thread_struct));
 	*tsk = *current;
 
 	list_init(&tsk->list);
 	list_add_tail(&init_task_union.task.list, &tsk->list);	
-	tsk->pid++;	
+	tsk->pid++;
 	tsk->state = TASK_UNINTERRUPTIBLE;
 
-	thd = (struct thread_struct *)(tsk + 1);
-	tsk->thread = thd;	
+	thd = (struct thread_struct*)(tsk + 1);
+	tsk->thread = thd;
 
-	memcpy(regs, (void *)((unsigned long)tsk + STACK_SIZE - sizeof(struct pt_regs)),sizeof(struct pt_regs));
+	memcpy(regs, (void *)((unsigned long)tsk + STACK_SIZE - sizeof(struct pt_regs)), sizeof(struct pt_regs));
 
 	thd->rsp0 = (unsigned long)tsk + STACK_SIZE;
 	thd->rip = regs->rip;
@@ -89,14 +90,13 @@ unsigned long do_fork(struct pt_regs * regs, unsigned long clone_flags, unsigned
 	if(!(tsk->flags & PF_KTHREAD))
 		thd->rip = regs->rip = (unsigned long)ret_from_intr;
 
-	tsk->state = TASK_RUNNING;
-
+	tsk->state = TASK_RUNNING;   
 	return 0;
 }
 
 int kernel_thread(unsigned long (* fn)(unsigned long), unsigned long arg, unsigned long flags) {
 	struct pt_regs regs;
-	memset(&regs,0,sizeof(regs));
+	memset(&regs, 0, sizeof(regs));
 
 	regs.rbx = (unsigned long)fn;
 	regs.rdx = (unsigned long)arg;
@@ -108,7 +108,7 @@ int kernel_thread(unsigned long (* fn)(unsigned long), unsigned long arg, unsign
 	regs.rflags = (1 << 9);
 	regs.rip = (unsigned long)kernel_thread_func;
 
-	return do_fork(&regs,flags,0,0);
+	return do_fork(&regs, flags, 0, 0);
 }
 
 void task_init() {
@@ -130,9 +130,9 @@ void task_init() {
 
 	list_init(&init_task_union.task.list);
 
-	kernel_thread(init,10,CLONE_FS | CLONE_FILES | CLONE_SIGNAL);
+	kernel_thread(init, 10, CLONE_FS|CLONE_FILES|CLONE_SIGNAL);
 
 	init_task_union.task.state = TASK_RUNNING;
 	struct task_struct *p = container_of(list_next(&current->list), struct task_struct, list);
-	// switch_to(current, p);
+	switch_to(current, p);
 }
