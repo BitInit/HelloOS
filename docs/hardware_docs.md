@@ -1,3 +1,9 @@
+## x86 寄存器描述
+
+可见文档：[一口气看完45个寄存器，CPU核心技术大揭秘](https://cloud.tencent.com/developer/article/1744471)
+
+
+
 ## 长模式段描述符
 
 ![gdt](./resources/ia32e_descriptor.webp)

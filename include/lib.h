@@ -16,7 +16,8 @@ unsigned char io_in8(unsigned short port);
 
 /**
  * wrmsr（write model specific）写 msr 寄存器。
- * msr 寄存器：
+ * msr 寄存器（一组64位的寄存器）：EDX:EAX 分别组成该寄存器的高 32 位和低 32 位，ECX 指定地址。
+ *                         wrmsr和rdmsr必须在 0 特权级或实模式下执行。
  */
 static inline void wrmsr(unsigned long address,unsigned long value) {
 	__asm__ __volatile__("wrmsr	\n\t"::"d"(value >> 32),"a"(value & 0xffffffff),"c"(address):"memory");	
