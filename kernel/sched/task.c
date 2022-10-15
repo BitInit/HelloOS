@@ -1,4 +1,5 @@
 #include "task.h"
+#include "ptrace.h"
 #include "kprint.h"
 #include "lib.h"
 #include "kstring.h"
@@ -28,13 +29,13 @@ void user_level_function() {
 	long ret = 0;
 	kinfo("user_level_function task is running\n");
 
-	__asm__	__volatile__	(	"leaq	sysexit_return_address(%%rip),	%%rdx	\n\t"
-		"movq	%%rsp,	%%rcx		\n\t"
-		"sysenter			\n\t"
-		"sysexit_return_address:	\n\t"
-		:"=a"(ret):"0"(15):"memory");	
+	// __asm__	__volatile__	(	"leaq	sysexit_return_address(%%rip),	%%rdx	\n\t"
+	// 	"movq	%%rsp,	%%rcx		\n\t"
+	// 	"sysenter			\n\t"
+	// 	"sysexit_return_address:	\n\t"
+	// 	:"=a"(ret):"0"(15):"memory");	
 
-	kinfo("user_level_function task called sysenter,ret:%ld\n",ret);
+	// kinfo("user_level_function task called sysenter,ret:%ld\n",ret);
 
 	while(1);
 }
@@ -42,7 +43,7 @@ void user_level_function() {
 unsigned long do_execve(struct pt_regs * regs) {
 	regs->rdx = 0x800000;	//RIP
 	regs->rcx = 0xa00000;	//RSP
-	regs->rax = 1;	
+	regs->rax = 1;
 	regs->ds = 0;
 	regs->es = 0;
 	kinfo("do_execve task is running\n");
@@ -50,6 +51,11 @@ unsigned long do_execve(struct pt_regs * regs) {
 	memcpy(user_level_function,(void *)0x800000,1024);
 
 	return 0;
+}
+
+unsigned long do_exit(unsigned long code) {
+	kinfo("exit task is running,arg:%#018lx\n", code);
+	while(1);
 }
 
 unsigned long init(unsigned long arg) {
@@ -61,17 +67,12 @@ unsigned long init(unsigned long arg) {
 	current->thread->rsp = (unsigned long)current + STACK_SIZE - sizeof(struct pt_regs);
 	regs = (struct pt_regs *)current->thread->rsp;
 
-	__asm__	__volatile__	("movq	%1,	%%rsp	\n\t"
-		"pushq	%2		\n\t"
+	__asm__	__volatile__("movq	%1,	%%rsp	\n\t"
+		"pushq  %2	\n\t"
 		"jmp	do_execve	\n\t"
 		::"D"(regs),"m"(current->thread->rsp),"m"(current->thread->rip):"memory");
 
 	return 1;
-}
-
-unsigned long do_exit(unsigned long code) {
-	kinfo("exit task is running,arg:%#018lx\n", code);
-	while(1);
 }
 
 extern void kernel_thread_func(void);
@@ -131,7 +132,7 @@ unsigned long do_fork(struct pt_regs * regs, unsigned long clone_flags, unsigned
 
 	if(!(tsk->flags & PF_KTHREAD))
 		thd->rip = regs->rip = (unsigned long)ret_system_call;
-
+	
 	tsk->state = TASK_RUNNING;
 	return 0;
 }
@@ -166,8 +167,8 @@ void task_init() {
 	init_mm.start_stack = gmdsc.start_stack;
 
 	wrmsr(0x174, KERNEL_CS);
-	wrmsr(0x175, current->thread->rsp0);
-	wrmsr(0x176, (unsigned long) system_call);
+	// wrmsr(0x175, current->thread->rsp0);
+	// wrmsr(0x176, (unsigned long) system_call);
 
 	set_tss64(init_tss[0].rsp0, init_tss[0].rsp1, init_tss[0].rsp2, init_tss[0].ist1, init_tss[0].ist2, init_tss[0].ist3, init_tss[0].ist4, init_tss[0].ist5, init_tss[0].ist6, init_tss[0].ist7);
 	init_tss[0].rsp0 = init_thread.rsp0;

@@ -57,18 +57,18 @@ multiboot_entry:
     # 顶级页目录表
     mov $pml4, %eax
     mov $pdpt, %ebx
-    or $0x03, %ebx
+    or $0x07, %ebx
     mov %ebx, 0(%eax)
     mov %ebx, 2048(%eax) /* 一个页地址占8B，则为 256*8 */
     # 页目录指针表
     mov $pdpt, %eax
     mov $pd, %ebx
-    or $0x03, %ebx
+    or $0x07, %ebx
     mov %ebx, 0(%eax)
     # 页目录表
     mov $512, %ecx
     mov $pd, %eax
-    mov $0x83, %ebx
+    mov $0x87, %ebx
 .pd_loop:
     mov %ebx, 0(%eax)
     add $0x200000, %ebx
@@ -105,7 +105,7 @@ go_to_kernel:
 _start64:
     # 配置 IDT
     lidt idt_pointer64(%rip)
-setup_IDT:							
+setup_IDT:
 	leaq	ignore_int(%rip),	%rdx
 	movq	$(0x08 << 16),	%rax
 	movw	%dx,	%ax

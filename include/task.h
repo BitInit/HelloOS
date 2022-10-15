@@ -27,7 +27,7 @@ struct mm_struct {
 
 // 进程切换状态信息
 struct thread_struct {
-    unsigned long rsp0;         // in tss，内核层栈基地址
+    unsigned long rsp0;         // 内核层栈基地址
 
     unsigned long rip;			// 内核层代码指针
     unsigned long rsp;			// 内核层当前栈指针
@@ -138,33 +138,6 @@ struct tss_struct {
 	.iomapbaseaddr = 0	\
 }
 struct tss_struct init_tss[NR_CPUS] = { [0 ... NR_CPUS-1] = INIT_TSS };
-
-struct pt_regs {
-	unsigned long r15;
-	unsigned long r14;
-	unsigned long r13;
-	unsigned long r12;
-	unsigned long r11;
-	unsigned long r10;
-	unsigned long r9;
-	unsigned long r8;
-	unsigned long rbx;
-	unsigned long rcx;
-	unsigned long rdx;
-	unsigned long rsi;
-	unsigned long rdi;
-	unsigned long rbp;
-	unsigned long ds;
-	unsigned long es;
-	unsigned long rax;
-	unsigned long func;
-	unsigned long errcode;
-	unsigned long rip;
-	unsigned long cs;
-	unsigned long rflags;
-	unsigned long rsp;
-	unsigned long ss;
-};
 
 static inline struct task_struct* get_current() {
 	struct task_struct *current = NULL;

@@ -41,7 +41,7 @@
                                          "movq %rsp, %rdi   \n\t"                 \
                                          "leaq ret_from_intr(%rip), %rax    \n\t" \
                                          "pushq %rax \n\t"                        \
-                                         "movq	$" #nr ",	%rsi			\n\t"        \
+                                         "movq	$" #nr ",	%rsi			\n\t" \
                                          "jmp do_IRQ    \n\t");
 Build_IRQ(0x20);
 Build_IRQ(0x21);
