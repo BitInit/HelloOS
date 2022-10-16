@@ -28,14 +28,15 @@ void __switch_to(struct task_struct *prev,struct task_struct *next) {
 void user_level_function() {
 	long ret = 0;
 	kinfo("user_level_function task is running\n");
+	char str[] = "Hello World! \n";
 
-	// __asm__	__volatile__	(	"leaq	sysexit_return_address(%%rip),	%%rdx	\n\t"
-	// 	"movq	%%rsp,	%%rcx		\n\t"
-	// 	"sysenter			\n\t"
-	// 	"sysexit_return_address:	\n\t"
-	// 	:"=a"(ret):"0"(15):"memory");	
+	__asm__	__volatile__(	"leaq	sysexit_return_address(%%rip),	%%rdx	\n\t"
+		"movq	%%rsp,	%%rcx		\n\t"
+		"sysenter			\n\t"
+		"sysexit_return_address:	\n\t"
+		:"=a"(ret):"0"(1), "D"(str):"memory");
 
-	// kinfo("user_level_function task called sysenter,ret:%ld\n",ret);
+	kinfo("user_level_function task called sysenter,ret:%ld\n",ret);
 
 	while(1);
 }
@@ -167,8 +168,8 @@ void task_init() {
 	init_mm.start_stack = gmdsc.start_stack;
 
 	wrmsr(0x174, KERNEL_CS);
-	// wrmsr(0x175, current->thread->rsp0);
-	// wrmsr(0x176, (unsigned long) system_call);
+	wrmsr(0x175, current->thread->rsp0);
+	wrmsr(0x176, (unsigned long) system_call);
 
 	set_tss64(init_tss[0].rsp0, init_tss[0].rsp1, init_tss[0].rsp2, init_tss[0].ist1, init_tss[0].ist2, init_tss[0].ist3, init_tss[0].ist4, init_tss[0].ist5, init_tss[0].ist6, init_tss[0].ist7);
 	init_tss[0].rsp0 = init_thread.rsp0;

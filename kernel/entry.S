@@ -86,4 +86,4 @@ system_call:
 	movq	%rdx,	%es;
 	movq	%rsp,	%rdi
 	callq	system_call_function
-
+	jmp		ret_system_call
