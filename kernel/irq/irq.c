@@ -2,6 +2,7 @@
 #include "lib.h"
 #include "gate.h"
 #include "kprint.h"
+#include "keyboard.h"
 
 #define SAVE_ALL_REGS       \
     "cld; \n\t"             \
@@ -121,12 +122,10 @@ void init_interrupt() {
 }
 
 void do_IRQ(unsigned long regs, unsigned long nr) {
-    unsigned char x;
     switch (nr) {
     // 键盘中断
     case 0x21:
-        x = io_in8(0x60);
-        kprintf("keyboard: %#08x\n", x);
+        keyboard_handler(nr, regs);
         break;
     
     default:

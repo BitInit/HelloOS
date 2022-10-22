@@ -1,6 +1,6 @@
 MAKEFLAGS = --no-print-directory
 
-SRC := arch/x86/boot kernel mm
+SRC := arch/x86/boot kernel mm drivers
 
 all: clean iso
 

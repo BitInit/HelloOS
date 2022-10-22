@@ -129,6 +129,7 @@ void print(uint16_t color, char *buf) {
                 strncpy(dst, src, n);
                 cursor.x = 0;
                 cursor.y = MAX_ROW - 1;
+				memset((char*)(VGA_BASE) + (MAX_ROW - 1)*MAX_COLUMN*2, 0, MAX_COLUMN*2);
             }
             uint16_t *p = (uint16_t*)((uint64_t)(VGA_BASE + cursor.y*MAX_COLUMN*2 + cursor.x*2));
             *p = (uint16_t)(color << 8) + ch;
