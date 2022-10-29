@@ -9,9 +9,5 @@ build: $(OBJS)
 $(OBJS):%.o:%.c
 	gcc $(CFLAGS) -o $@ $<
 
-entry.o: entry.S
-	@gcc -E $(CFLAGS) $< > entry.i
-	@as $(ASFLAGS) -o $@ entry.i
-
 clean:
-	rm -rf $(OBJS) *.i *.o
+	rm -rf $(OBJS) *.o

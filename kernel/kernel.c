@@ -5,6 +5,7 @@
 #include "irq.h"
 #include "task.h"
 #include "gate.h"
+#include "ata.h"
 
 extern global_mm_descriptor_t gmdsc;
 extern multiboot_uint64_t mb2_magic;
@@ -33,8 +34,10 @@ int kernel_start() {
     // 初始化中断
     init_interrupt();
 
-    task_init();
+    ata_init();
 
+    task_init();
+    
     while (1) ;
     return 0;
 }

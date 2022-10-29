@@ -3,6 +3,7 @@
 #include "gate.h"
 #include "kprint.h"
 #include "keyboard.h"
+#include "ata.h"
 
 #define SAVE_ALL_REGS       \
     "cld; \n\t"             \
@@ -127,10 +128,19 @@ void do_IRQ(unsigned long regs, unsigned long nr) {
     case 0x21:
         keyboard_handler(nr, regs);
         break;
+
+    case 0x2f:
+        ata_handler_read(nr, regs);
+        break;
+
+    case 0x2e:
+        ata_handler_write(nr, regs);
     
     default:
         break;
     }
+    if (nr != 0x20)
+        kinfo("\ncode: %x\n", nr);
     
     io_out8(0x20, 0x20);
 }
