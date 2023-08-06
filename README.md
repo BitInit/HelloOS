@@ -7,7 +7,7 @@
 1. 安装依赖
 
 ```bash
-$ apt install -y make gcc grub git
+$ apt install -y make gcc grub git xorriso
 ```
 
 2. 代码拉取 

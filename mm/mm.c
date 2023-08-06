@@ -52,7 +52,7 @@ void page_bitmap_init(uint_t start_addr) {
 
     gmdsc.total_mem_length = total_mem;
     gmdsc.page_bits = (uint_t*)start_addr;
-    gmdsc.page_bits_size = total_mem >> PAGE_4K_SHIFT;
+    gmdsc.page_bits_size = total_mem >> PAGE_4K_SHIFT; 
     gmdsc.page_bits_length = (((uint_t)(total_mem >> PAGE_4K_SHIFT) + sizeof(uint_t) * 8 - 1) / 8) & ( ~ (sizeof(uint_t) - 1));
     kinfo("page_bitmap start_addr:%x page_bits_size:%d page_bits_length:%d\n", gmdsc.page_bits, gmdsc.page_bits_size, gmdsc.page_bits_length);
     memset(gmdsc.page_bits, 0xff, gmdsc.page_bits_length);
