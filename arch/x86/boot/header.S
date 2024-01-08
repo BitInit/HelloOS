@@ -16,4 +16,9 @@ multiboot_header:
     .long multiboot_header_end - multiboot_header  /* header length */
     .long -(MULTIBOOT2_HEADER_MAGIC + MULTIBOOT_ARCHITECTURE_I386 + (multiboot_header_end - multiboot_header))
 
+    /* required end tag */
+    .align 8
+    .short MULTIBOOT_HEADER_TAG_END # type
+    .short 0                        # flags
+    .long  8                        # size
 multiboot_header_end:

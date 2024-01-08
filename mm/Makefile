@@ -1,3 +1,6 @@
 
 build:
 	echo "mm"
+
+clean:
+	

@@ -9,7 +9,7 @@ bochsout.txt
 bimg
 !bimg/
 *.dSYM
-iso/
+build_dir/
 HelloOS
 *.s~
 *.i
