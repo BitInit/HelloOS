@@ -1,6 +1,6 @@
+-include $(BASE_DIR)/scripts/config.mk
 
-build:
-	echo "mm"
+compile: $(c_srcs_obj)
 
 clean:
-	
+	$(HIDE)rm -rf $(c_srcs_obj)

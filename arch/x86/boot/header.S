@@ -1,5 +1,6 @@
 #define ASM_FILE
 #include <asm/multiboot2.h>
+#include <os/linkage.h>
 
 .section .text.head
 .global startup
@@ -18,7 +19,7 @@ multiboot_header:
 
     /* required end tag */
     .align 8
-    .short MULTIBOOT_HEADER_TAG_END # type
-    .short 0                        # flags
-    .long  8                        # size
+    .short MULTIBOOT_HEADER_TAG_END /* type */
+    .short 0                        /* flags */
+    .long  8                        /* size */
 multiboot_header_end:

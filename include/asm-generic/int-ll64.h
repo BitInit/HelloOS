@@ -1,5 +1,5 @@
-#ifndef _ASM_X86_TYPES_H
-#define _ASM_X86_TYPES_H
+#ifndef _ASM_GENERIC_LL64_TYPES_H
+#define _ASM_GENERIC_LL64_TYPES_H
 
 typedef signed char __s8;
 typedef unsigned char __u8;

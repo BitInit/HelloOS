@@ -1,5 +1,5 @@
 kernel_target=kernel.elf
-SRCS = $(BASE_DIR)/init $(BASE_DIR)/kernel $(BASE_DIR)/mm
+SRCS = $(BASE_DIR)/init $(BASE_DIR)/kernel $(BASE_DIR)/mm $(BASE_DIR)/lib
 ifeq ($(CONFIG_x86_64), y)
 	SRCS += $(BASE_DIR)/arch/x86
 	lds = $(BASE_DIR)/arch/x86/boot/vmlinux.lds
@@ -26,7 +26,7 @@ $(kernel_target): compile
 
 compile:
 	$(HIDE)for dir in $(SRCS); do \
-		make -C $$dir || exit 1; \
+		make -C $$dir compile || exit 1; \
 	done
 
 clean:

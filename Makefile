@@ -5,7 +5,7 @@ export CONFIG_x86_64=y
 export CC=gcc
 export AS=as
 export HIDE=@
-export DEBUG=
+export DEBUG=-g
 
 
 HelloOS:
@@ -20,3 +20,8 @@ cleanall:
 run:
 	qemu-system-x86_64 -m 1G -cdrom arch/$(TARGET_ISO) -nographic
 
+debug:
+	qemu-system-x86_64 -m 1G -cdrom arch/$(TARGET_ISO) -s -S -nographic
+
+kill:
+	@ps aux | grep [q]emu | awk '{print $$2}' | xargs kill

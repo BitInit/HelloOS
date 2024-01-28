@@ -1,7 +1,7 @@
 #ifndef _ASM_E820_H
 #define _ASM_E820_H
 
-#include <linux/ioport.h>
+#include <os/ioport.h>
 
 struct e820entry {
 	__u64 addr;	/* start of memory segment */

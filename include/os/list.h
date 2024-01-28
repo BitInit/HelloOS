@@ -1,5 +1,5 @@
-#ifndef _LINUX_LIST_H
-#define _LINUX_LIST_H
+#ifndef _OS_LIST_H
+#define _OS_LIST_H
 
 struct list_head {
     struct list_head *prev, *next;

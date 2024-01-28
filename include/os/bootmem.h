@@ -1,6 +1,6 @@
 // 系统启动时，物理内存分配器
-#ifndef _LINUX_BOOTMEM_H
-#define _LINUX_BOOTMEM_H
+#ifndef _OS_BOOTMEM_H
+#define _OS_BOOTMEM_H
 
 #include <mmzone.h>
 
