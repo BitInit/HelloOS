@@ -4,4 +4,6 @@
 typedef unsigned long	__kernel_size_t;
 typedef long		    __kernel_ssize_t;
 
+typedef long		__kernel_ptrdiff_t;
+
 #endif

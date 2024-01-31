@@ -22,7 +22,7 @@ $(TARGET_ISO): clean $(kernel_target)
 	$(HIDE)rm -rf build_dir
 
 $(kernel_target): compile
-	$(HIDE)ld -b elf64-x86-64 -z muldefs -o $(kernel_target) -Map=./kernel.map -T $(lds) $(shell find $(SRCS) -name "*.o") 
+	$(HIDE)$(LD) -b elf64-x86-64 -z muldefs -o $(kernel_target) -Map=./kernel.map -T $(lds) $(shell find $(SRCS) -name "*.o") 
 
 compile:
 	$(HIDE)for dir in $(SRCS); do \
