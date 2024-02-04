@@ -12,7 +12,7 @@ $(TARGET_ISO): clean $(kernel_target)
 	$(HIDE)mkdir -p build_dir/boot/grub
 	$(HIDE)cp $(kernel_target) build_dir/boot
 
-	$(HIDE)echo 'set timeout=1' > build_dir/boot/grub/grub.cfg
+	$(HIDE)echo 'set timeout=0' > build_dir/boot/grub/grub.cfg
 	$(HIDE)echo 'set default=0' >> build_dir/boot/grub/grub.cfg
 	$(HIDE)echo 'menuentry "HelloOS" {' >> build_dir/boot/grub/grub.cfg
 	$(HIDE)echo '	multiboot2 /boot/kernel.elf "HelloOS"' >> build_dir/boot/grub/grub.cfg

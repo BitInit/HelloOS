@@ -19,3 +19,15 @@ __kernel_size_t strnlen(const char *s, __kernel_size_t count) {
 	return sc - s;
 }
 #endif
+
+#ifndef __HAVE_ARCH_MEMCPY
+void *memcpy(void *dest, const void *src, size_t count)
+{
+	char *tmp = dest;
+	const char *s = src;
+
+	while (count--)
+		*tmp++ = *s++;
+	return dest;
+}
+#endif

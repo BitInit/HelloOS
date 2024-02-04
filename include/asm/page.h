@@ -29,6 +29,8 @@
 #define KERNEL_IMAGE_SIZE	(512 * 1024 * 1024)
 #define KERNEL_IMAGE_START	_AC(0xffffffff80000000, UL)
 
+#define __pa(x)		((unsigned long)(x)-PAGE_OFFSET)
+#define __va(x)			((void *)((unsigned long)(x)+PAGE_OFFSET))
 
 
 #endif

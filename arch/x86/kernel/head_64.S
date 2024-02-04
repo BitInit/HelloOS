@@ -8,6 +8,8 @@
 .global startup_64
 .extern print
 startup_64:
+	mov 	%ebx, mb2_info
+
 	/* 开启 PAE */
 	movl 	%cr4, %eax
 	btsl	$5, %eax
@@ -63,6 +65,8 @@ secondary_startup_64:
 
 ENTRY(init_rsp)
 	.quad  init_thread_union+THREAD_SIZE-8
+ENTRY(mb2_info)
+	.quad 0x00
 
 .text
 .code64

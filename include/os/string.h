@@ -10,4 +10,8 @@ extern void *memset(void *,int,__kernel_size_t);
 extern __kernel_size_t strnlen(const char *,__kernel_size_t);
 #endif
 
+#ifndef __HAVE_ARCH_MEMCPY
+extern void* memcpy(void *dest, const void *src, size_t count);
+#endif
+
 #endif
